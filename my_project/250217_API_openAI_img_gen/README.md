@@ -7,4 +7,4 @@
     5. 이미지 분석 : 생성된 이미지 url을 입력받아 해당 이미지의 정보 요약 출력 : gpt-4o-mini
     6. 이미지 저장 : url의 이미지를 불러와 로컬에 저장
 
-![생성된 이미지 예시]()
+![생성된 이미지 예시](https://github.com/haebo9/for_AI/blob/main/my_project/250217_API_openAI_img_gen/result/DALE_image_cat6.png)
