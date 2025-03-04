@@ -18,4 +18,4 @@
 7. 전체적인 분위기는 기발하고 유머러스하며, 전형적인 교실 환경과 의인화된 고양이들이 결합되어 있습니다.
 ```
 
-![생성된 이미지](https://github.com/haebo9/for_AI/blob/main/my_project/250217_API_openAI_img_gen/result/DALE_image_cat6.png)
+![생성된 이미지](https://github.com/haebo9/for_AI/blob/main/my_project/250217_openai-img-gen/result/DALE_image_cat6.png)
