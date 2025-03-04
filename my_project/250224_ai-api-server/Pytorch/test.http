@@ -1,0 +1,98 @@
+# XOR 연산 테스트
+POST http://localhost:8000/xor
+Content-Type: application/json
+
+{
+  "x1": 0,
+  "x2": 0
+}
+
+###
+
+POST http://localhost:8000/xor
+Content-Type: application/json
+
+{
+  "x1": 0,
+  "x2": 1
+}
+
+###
+
+POST http://localhost:8000/xor
+Content-Type: application/json
+
+{
+  "x1": 1,
+  "x2": 0
+}
+
+###
+
+POST http://localhost:8000/xor
+Content-Type: application/json
+
+{
+  "x1": 1,
+  "x2": 1
+}
+
+### 
+
+# AND 연산 테스트
+POST http://localhost:8000/and
+Content-Type: application/json
+
+{
+  "x1": 0,
+  "x2": 0
+}
+
+###
+
+POST http://localhost:8000/and
+Content-Type: application/json
+
+{
+  "x1": 0,
+  "x2": 1
+}
+
+###
+
+POST http://localhost:8000/and
+Content-Type: application/json
+
+{
+  "x1": 1,
+  "x2": 0
+}
+
+###
+
+POST http://localhost:8000/and
+Content-Type: application/json
+
+{
+  "x1": 1,
+  "x2": 1
+}
+
+### 
+
+# NOT 연산 테스트
+POST http://localhost:8000/not
+Content-Type: application/json
+
+{
+  "x1": 0
+}
+
+###
+
+POST http://localhost:8000/not
+Content-Type: application/json
+
+{
+  "x1": 1
+}

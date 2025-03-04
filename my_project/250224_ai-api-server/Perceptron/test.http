@@ -1,0 +1,23 @@
+### AND 연산 테스트
+POST http://127.0.0.1:8000/and
+Content-Type: application/json
+
+{
+  "input": [1, 1]
+}
+
+### NOT 연산 테스트
+POST http://127.0.0.1:8000/not
+Content-Type: application/json
+
+{
+  "input": [0]
+}
+
+### XOR 연산 테스트
+POST http://127.0.0.1:8000/xor
+Content-Type: application/json
+
+{
+  "input": [1, 0]
+}

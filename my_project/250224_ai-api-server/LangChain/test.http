@@ -1,0 +1,23 @@
+### Test /chat endpoint - 정상적인 채팅
+GET http://127.0.0.1:8000/chat?message=안녕하세요&session_id=test_session
+Content-Type: application/json
+
+### Test /chat endpoint - 다른 세션 ID
+GET http://127.0.0.1:8000/chat?message=어떻게지내세요?&session_id=another_session
+Content-Type: application/json
+
+### Test /chat endpoint - 빈 메시지
+GET http://127.0.0.1:8000/chat?message=&session_id=test_session
+Content-Type: application/json
+
+### 정상적인 번역 요청 (한국어)
+GET http://127.0.0.1:8000/translates?text=Hello,%20how%20are%20you?&language=ko&session_id=test_session
+Content-Type: application/json
+
+### 정상적인 번역 요청 (스페인어)
+GET http://127.0.0.1:8000/translates?text=This%20is%20a%20test.&language=es&session_id=another_session
+Content-Type: application/json
+
+### 에러 케이스 (잘못된 언어 코드)
+GET http://127.0.0.1:8000/translates?text=Test&language=invalid
+Content-Type: application/json

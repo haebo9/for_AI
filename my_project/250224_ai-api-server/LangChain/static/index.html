@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot</title>
+    <style>
+        #chat-log {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+        .user-message {
+            text-align: right;
+            color: blue;
+            margin-bottom: 5px;
+        }
+        .bot-message {
+            text-align: left;
+            color: green;
+            margin-bottom: 5px;
+        }
+        #chat-form {
+            display: flex;
+        }
+        #user-input {
+            flex-grow: 1;
+            padding: 5px;
+        }
+        #send-button {
+            padding: 5px 10px;
+        }
+        .info-display {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        #container{
+            display: flex;
+            flex-direction: column-reverse; /* 순서 변경 */
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <form id="chat-form">
+            <input type="text" id="user-input" name="message">
+            <button type="submit" id="send-button">Send</button>
+        </form>
+        <div id="chat-log"></div>
+        <div id="info-display" class="info-display"></div>
+    </div>
+
+    <script>
+        // ... (JavaScript 코드는 동일)
+    </script>
+</body>
+</html>
