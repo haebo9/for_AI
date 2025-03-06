@@ -35,4 +35,5 @@
 ### Data API
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
   <img src="https://img.shields.io/badge/Kaggle-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white" alt="Kaggle Badge">
+  <img src="https://img.shields.io/badge/Tavily-blue?style=for-the-badge" alt="Tavily Model Badge">
 </div>
