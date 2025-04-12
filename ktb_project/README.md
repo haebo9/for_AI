@@ -1,3 +1,4 @@
+===진행기간 : 25.01.20 - 25.03.31===
 > ktb_1week_CLI-stock-trading.ipynb
 - 목적 : 30일 동안 100만원으로 500만원을 만드는 가상의 주식 투자 게임.
 - 기술 : pandas, tabulate, random, time
