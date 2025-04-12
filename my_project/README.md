@@ -7,4 +7,4 @@
 > 250228_MedicineTime_Hackathon
 - 25.2.26 - 25.2.28 에 진행한 카카오테크부트캠프의 해커톤 대회 (AI 코드 only)
 - 대회 주제 : AI를 활용한 서비스
-- 프로젝트 : 고령층을 위한 복약 알림 서비스
+- 프로젝트 : [고령층을 위한 복약 알림 서비스](https://github.com/MedicinedTime)
