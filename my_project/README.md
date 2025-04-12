@@ -5,6 +5,6 @@
 - pytorch, Perceptron, Langchain을 각각 사용하여 모델을 만들고 FastApi로 서버에 올리는 실습
 - Langchain으로 chatbot model을 만든 후 대화가 저장되는 채팅을 구현
 > 250228_MedicineTime_Hackathon
-- 25.2.26 - 25.2.28 에 진행한 카카오테크부트캠프의 해커톤 대회
-- 주제 : AI를 활용한 서비스
+- 25.2.26 - 25.2.28 에 진행한 카카오테크부트캠프의 해커톤 대회 (AI 코드 only)
+- 대회 주제 : AI를 활용한 서비스
 - 프로젝트 : 고령층을 위한 복약 알림 서비스
