@@ -8,3 +8,6 @@
 - 25.2.26 - 25.2.28 에 진행한 카카오테크부트캠프의 해커톤 대회 프로젝트의 AI Code
 - 대회 주제 : AI를 활용한 서비스
 - 프로젝트 : [고령층을 위한 복약 알림 서비스](https://github.com/MedicinedTime)
+> 250511_markdown_streamlit
+- 일반 텍스트를 GitHub README.md에 적합한 형식의 마크다운으로 자동 변환하는 웹 애플리케이션
+- Streamlit을 사용한 UI와 OpenAI API 기반의 변환 로직을 통해 간결하고 명확한 출력 제공
