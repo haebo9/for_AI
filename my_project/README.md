@@ -1,13 +1,23 @@
-> 250217_openai-img-generation
-- openAI model인 Dall-E 3를 사용하여 이미지를 생성하고 분석하는 방법에 대한 실습
-- 입력한 프롬프트를 GPT 4o로 이미지 모델의 프롬프트 형태로 바꾸어 입력
-> 250224_ai-api-server
-- pytorch, Perceptron, Langchain을 각각 사용하여 모델을 만들고 FastApi로 서버에 올리는 실습
-- Langchain으로 chatbot model을 만든 후 대화가 저장되는 채팅을 구현
-> 250228_MedicineTime_Hackathon
-- 25.2.26 - 25.2.28 에 진행한 카카오테크부트캠프의 해커톤 대회 프로젝트의 AI Code
-- 대회 주제 : AI를 활용한 서비스
-- 프로젝트 : [고령층을 위한 복약 알림 서비스](https://github.com/MedicinedTime)
-> 250511_markdown_streamlit
-- 일반 텍스트를 GitHub README.md에 적합한 형식의 마크다운으로 자동 변환하는 웹 애플리케이션
-- Streamlit을 사용한 UI와 OpenAI API 기반의 변환 로직을 통해 간결하고 명확한 출력 제공
+# AI 프로젝트 모음
+
+## 프로젝트 구조
+
+```
+my_project/
+├── LLM_api/                 
+│   └── OpenAI/              # OpenAI API DALL-E 3 활용 이미지 생성 및 분석 프로젝트 (2025.02.17)
+│
+├── FastAPI/                 
+│   ├── Pytorch/             # PyTorch 기반 모델 서버 (2025.02.24)
+│   ├── LangChain/           # LangChain 기반 챗봇 서버 (2025.02.24)
+│   └── Perceptron/          # Perceptron 모델 서버 (2025.02.24)
+│
+├── Hackathon/               
+│   └── MedicineTime/        # 고령층 복약 알림 서비스 카카오테크부트캠프 해커톤 (2025.02.26-28)
+│
+├── Streamlit/               
+│   └── markdown_converter/  # Streamlit 기반 마크다운 변환 웹 앱 (2025.05.10-11)
+│
+├── Finetuning/              
+│   └── Test/                # LLM 모델 파인튜닝을 위한 테스트 코드 (2025.05.13-)
+```
