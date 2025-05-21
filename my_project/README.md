@@ -7,6 +7,8 @@ my_project/
 ├── LLM_api/                 
 │   └── OpenAI/              # OpenAI API DALL-E 3 활용 이미지 생성 및 분석 프로젝트 (2025.02.17)
 │
+├── ktb_project/             # 카카오테크 부트캠프 과제 모음 (2025.01.20-03.31)
+│
 ├── FastAPI/                 
 │   ├── Pytorch/             # PyTorch 기반 모델 서버 (2025.02.24)
 │   ├── LangChain/           # LangChain 기반 챗봇 서버 (2025.02.24)
