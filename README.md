@@ -1,5 +1,5 @@
 ## Welcome👋
-안녕하세요! <img alt="Static Badge" src="https://img.shields.io/badge/haebo9-%233793EF"> 입니다. <br />
+안녕하세요! <img alt="Static Badge" src="https://img.shields.io/badge/haebo-%233793EF"> 입니다. <br />
 앞으로 좋은 코드 하나씩 보여드리겠습니다.
 
 ## My Interest
