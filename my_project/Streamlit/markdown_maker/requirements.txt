@@ -4,3 +4,4 @@ requests==2.32.3
 python-dotenv==0.21.0
 watchdog==4.0.1
 langchain==0.3.25
+google-generativeai==0.8.5
