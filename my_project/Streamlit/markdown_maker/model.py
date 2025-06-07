@@ -1,48 +1,60 @@
 import openai
-import os
-from dotenv import load_dotenv
+import google.generativeai as genai
 from langchain.prompts import PromptTemplate
+from config import OPENAI_API_KEY, GEMINI_API_KEY  # config에서 키 import
 
-# Load environment variables from .env file
-load_dotenv()
+# OpenAI API 키 설정
+if OPENAI_API_KEY:
+    openai.api_key = OPENAI_API_KEY
 
-# Get the OpenAI API key from environment variables
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+# Gemini API 키 설정
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
-# Check if the API key is available
-if not OPENAI_API_KEY:
-    raise ValueError("OpenAI API key is not set. Please check your .env file.")
-
-# Set your OpenAI API key
-openai.api_key = OPENAI_API_KEY
-
-# Define a prompt template using Langchain with Korean instructions
+# 프롬프트 템플릿 (공통)
 prompt_template = PromptTemplate(
     input_variables=["text"],
     template=(
-        "당신은 일반 텍스트를 GitHub README.md 파일에 적합한 잘 형식화된 마크다운으로 변환하는 "
-        "도움이 되는 어시스턴트입니다. 출력이 명확하고 간결하며 적절한 마크다운 구문을 사용하도록 하세요."
-        "필요하다면 문장의 구조나 형식으로 모두 변경하여 글을 작성하시오."
-        "그리고 코드 블록을 만들어서 코드를 작성하시오."
-        "답변은 한국어로 작성하시오."
-        "다음은 마크다운으로 변환해야 할 텍스트입니다:\n\n{text}"
+        "You are an expert assistant that converts plain text into a well-structured, highly readable Markdown document suitable for a GitHub README.md file. "
+        "Your output must be clear, concise, and use proper Markdown syntax. "
+        "Actively utilize Markdown features such as headers, lists, tables, and especially code blocks where code is present or implied. "
+        "For any code, always use fenced code blocks with the correct language tag (e.g., ```python, ```bash, etc.). "
+        "If the text contains instructions, examples, or data, format them using appropriate Markdown elements for maximum clarity. "
+        "For file/folder structures, always wrap them in a Markdown code block (using triple backticks: ```), and use tree symbols such as ├──, └──, │, and spaces for indentation to represent the hierarchy clearly. "
+        "Restructure or rephrase sentences as needed to improve readability and formatting. "
+        "Do not include unnecessary explanations or verbose text—focus on delivering a clean, professional Markdown output. "
+        "Respond in Korean. "
+        "Here is the text to convert into Markdown:\n\n{text}"
     )
 )
 
-def convert_to_markdown(text):
+def convert_to_markdown(text: str, provider: str = "openai") -> str:
+    """
+    provider: "openai" 또는 "gemini" 중 선택
+    """
+    prompt = prompt_template.format(text=text)
     try:
-        # Use the prompt template to format the input
-        prompt = prompt_template.format(text=text)
-        
-        response = openai.ChatCompletion.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": prompt}
-            ]
-        )
-        # Return the content without wrapping it in backticks
-        markdown_content = response.choices[0].message['content'].strip()
-        return markdown_content
+        if provider == "openai":
+            if not OPENAI_API_KEY:
+                return "OpenAI API 키가 설정되어 있지 않습니다."
+            response = openai.ChatCompletion.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": prompt}
+                ]
+            )
+            markdown_content = response.choices[0].message['content'].strip()
+            return markdown_content
+
+        elif provider == "gemini":
+            if not GEMINI_API_KEY:
+                return "Gemini API 키가 설정되어 있지 않습니다."
+            model = genai.GenerativeModel("gemini-2.0-flash")
+            response = model.generate_content(prompt)
+            return response.text.strip()
+
+        else:
+            return "지원하지 않는 provider입니다. (openai 또는 gemini 중 선택)"
+
     except Exception as e:
-        # Log the error or handle it as needed
         return f"An error occurred: {str(e)}"

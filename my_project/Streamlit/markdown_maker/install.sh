@@ -3,6 +3,11 @@ set -e
 
 pip install -r requirements.txt
 
+# .env 파일의 내용을 환경변수로 export
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
+fi
+
 if [ -z "$OPENAI_API_KEY" ]; then
   echo "환경변수 OPENAI_API_KEY가 필요합니다. (예: export OPENAI_API_KEY=sk-xxxxxx)"
   exit 1
