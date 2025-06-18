@@ -252,10 +252,10 @@ if __name__ == "__main__":
     parser.add_argument('--skip', type=int, default=0, help='해당 줄까지 데이터는 모두 삭제(1부터 시작)')
     args = parser.parse_args()
 
-    root_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/dataset/"
+    root_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset"
     code = args.c
-    input_file_path = os.path.join(root_path, f'_dataset/dataset_{code}_made.jsonl')
-    output_file_path = os.path.join(root_path, f'_dataset/dataset_{code}_filtered.jsonl')
+    input_file_path = os.path.join(root_path, f'_made/dataset_{code}_made.jsonl')
+    output_file_path = os.path.join(root_path, f'_filtered/dataset_{code}_filtered.jsonl')
 
     # 데이터 필터링 및 후처리, 지정한 줄까지 삭제
     filter_and_postprocess(input_file_path, output_file_path, remove_duplicates = True, skip_until_line=args.skip)
@@ -267,8 +267,8 @@ if __name__ == "__main__":
     # post_type, emotion별 개수 출력
     count_features(output_file_path)
 
-# python3 preprocessing.py -c 0527 --skip 116
-# python3 preprocessing.py -c 0613
-# python3 preprocessing.py -c 0614
-# python3 preprocessing.py -c 0615
+# python3 made_to_filtered.py -c 0515 
+# python3 made_to_filtered.py -c 0527 --skip 116
+# python3 made_to_filtered.py -c 0615
+# python3 made_to_filtered.py -c 0617
 
