@@ -14,22 +14,38 @@ parser.add_argument("--dataset", type=str, required=True)
 args = parser.parse_args()
 
 dataset = args.dataset
-input_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/model_eval/_jsonl/{dataset}.jsonl"
-output_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/model_eval/_jsonl/{dataset}_kbs.jsonl"
+if "made" in dataset:
+    input_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_made/{dataset}.jsonl"
+    output_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_kobert/{dataset}_kbs.jsonl"
+elif "filtered" in dataset: 
+    input_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_filtered/{dataset}.jsonl"
+    output_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_kobert/{dataset}_kbs.jsonl"
 
 data_list = []
 candidates = []
 references = []
+from transformers import AutoTokenizer
+tokenizer = AutoTokenizer.from_pretrained("beomi/kcbert-base")
+# 토큰 수를 기반으로 300개에서 자르는 코드 작성
+def truncate_text(text: str, max_tokens: int = 290) -> str:
+    # 토큰 ID로 변환
+    input_ids = tokenizer.encode(text, add_special_tokens=False)
+    # 300개 초과 시 자르기
+    if len(input_ids) > max_tokens:
+        input_ids = input_ids[:max_tokens]
+    # 다시 문자열로 복원
+    return tokenizer.decode(input_ids, skip_special_tokens=True)
 
+# 계산 진행
 with open(input_jsonl, "r", encoding="utf-8") as f:
     for line in f:
         data = json.loads(line)
         if "instruct" in dataset:
-            candidates.append(data["input"])
-            references.append(data["output"])
+            candidates.append(truncate_text(data["input"]))
+            references.append(truncate_text(data["output"]))
         else: 
-            candidates.append(data["content"])
-            references.append(data["transformed_content"])
+            candidates.append(truncate_text(data["content"]))
+            references.append(truncate_text(data["transformed_content"]))
         data_list.append(data)
 
 print(f"⭕ 총 {len(data_list)}개 데이터, BERTScore 계산 시작...")

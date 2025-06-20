@@ -40,19 +40,15 @@ class TextPostprocessor:
         if len(emojis) > 2:
             keep = emojis[:2]
             text = re.sub(cls.EMOJI_PATTERN, '', text) + ''.join(keep)
-        # 연속 특수문자 2회까지만 허용
-        text = re.sub(r'([!?\.💢❤⭐✨🐾…])\1{2,}', r'\1\1', text)
+        # 연속 특수문자 압축은 하지 않음 (예: ... → ... 그대로 둠)
         # 반복 단어 2회까지만 허용
         words = re.findall(r'\b\w+\b', text)
         counts = Counter(words)
         for word, count in counts.items():
             if count > 2:
                 text = re.sub(rf'\b({re.escape(word)})\b', '', text, count=count - 2)
-        # 불필요한 단어 제거
-        for word in ['system', '안올라간다']:
-            text = text.replace(word, '')
         # 중복 마침표, 불필요한 공백 정리
-        text = re.sub(r'\.\.+', '.', text)
+        text = re.sub(r'\.\.+', lambda m: m.group(0), text)  # ... 등은 그대로 둠
         text = re.sub(r'\s+', ' ', text).strip()
         # 5자 미만, 의미 없는 텍스트는 오류 메시지
         if len(text) < 5 or re.fullmatch(r'[\W\d\s]+', text):
@@ -267,8 +263,9 @@ if __name__ == "__main__":
     # post_type, emotion별 개수 출력
     count_features(output_file_path)
 
-# python3 made_to_filtered.py -c 0515 
-# python3 made_to_filtered.py -c 0527 --skip 116
-# python3 made_to_filtered.py -c 0615
-# python3 made_to_filtered.py -c 0617
+# python3 2_to_filtered.py -c 0515 
+# python3 2_to_filtered.py -c 0527 --skip 116
+# python3 2_to_filtered.py -c 0615
+# python3 2_to_filtered.py -c 0617
+# python3 2_to_filtered.py -c 0618
 
