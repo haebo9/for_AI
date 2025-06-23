@@ -46,4 +46,4 @@ if __name__ == "__main__":
 
     count_posttype_emotion_and_content(args.data)
 
-# python feature_count.py --data my_project/Finetuning/dataset/_dataset/dataset_0615_filtered.jsonl
+# python 4.feature_count.py --data my_project/Finetuning/dataset/_dataset/dataset_0615_filtered.jsonl
