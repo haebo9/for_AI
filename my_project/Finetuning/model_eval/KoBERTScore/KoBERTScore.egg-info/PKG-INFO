@@ -7,13 +7,15 @@ Author: lovit
 Author-email: soy.lovit@gmail.com
 Keywords: nlp,BERTScore,Korean
 Description-Content-Type: text/markdown
-Requires-Dist: bokeh>=1.4.0
-Requires-Dist: korpora>=0.1.1
-Requires-Dist: flake8>=3.6.0
-Requires-Dist: scipy>=1.4.0
-Requires-Dist: torch>=1.6.0
-Requires-Dist: transformers>=3.1.0
-Requires-Dist: tqdm>=4.48.0
+Requires-Dist: transformers==4.11.3
+Requires-Dist: torch==1.10.2
+Requires-Dist: tokenizers==0.10.3
+Requires-Dist: tqdm==4.62.3
+Requires-Dist: scipy==1.7.3
+Requires-Dist: korpora==0.6.0
+Requires-Dist: bokeh==2.4.2
+Requires-Dist: flake8==4.0.1
+Requires-Dist: pyyaml==6.0
 Dynamic: author
 Dynamic: author-email
 Dynamic: description
@@ -31,7 +33,7 @@ BERTScore using pretrained Korean BERT. This package provides re-implemented ver
 
 ```
 git clone https://github.com/lovit/KoBERTScore
-cd ko-BERTScore
+cd KoBERTScore
 python setup.py install
 ```
 

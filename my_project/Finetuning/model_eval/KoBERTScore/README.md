@@ -6,7 +6,7 @@ BERTScore using pretrained Korean BERT. This package provides re-implemented ver
 
 ```
 git clone https://github.com/lovit/KoBERTScore
-cd ko-BERTScore
+cd KoBERTScore
 python setup.py install
 ```
 

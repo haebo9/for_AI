@@ -128,14 +128,15 @@ def bert_forwarding(bert_model, input_ids, attention_mask=None, output_layer_ind
         outputs = bert_model(
             input_ids, attention_mask=attention_mask, output_hidden_states=True)
         hidden_states = outputs[2]
-        # print("DEBUG: outputs =", outputs)
-    # print("❌DEBUG: output_layer_index =", output_layer_index, type(output_layer_index))
-    # print("❌DEBUG: hidden_states type =", type(hidden_states))
-    # print("❌DEBUG: hidden_states[-1] =", hidden_states[-1], type(hidden_states[-1]))
-    if output_layer_index == 'all':
-        return [h.cpu() for h in hidden_states]
-    return hidden_states[output_layer_index].cpu()
 
+    if isinstance(output_layer_index, str):
+        if output_layer_index == 'all':
+            return [h.cpu() for h in hidden_states]
+        else:
+            raise ValueError(f"output_layer_index must be int or 'all', got string '{output_layer_index}'")
+    if isinstance(output_layer_index, int):
+        return hidden_states[output_layer_index].cpu()
+    raise ValueError(f"output_layer_index must be int or 'all', got {output_layer_index} ({type(output_layer_index)})")
 
 def compute_RPF(refer_embeds, candi_embeds, refer_weight_mask, candi_weight_mask,
                 refer_ids=None, candi_ids=None, idf=None, rescale_base=0):

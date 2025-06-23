@@ -1,30 +1,53 @@
-import argparse
-from model_eval.functions.main_eval import kbs_eval, type_eval, llm_eval
+# import argparse
+# import csv
+# from functions._kobert_eval import KobertEvaluator
+# from functions._type_eval import EomiEvaluator
+# from functions._llm_eval import LLMEvaluator
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=str, required=True)
-    parser.add_argument("--general", type=lambda x: x.lower() == "true", default=False, help="일반화 평가도 함께 실행 (True/False)")
-    parser.add_argument("--kobert", type=lambda x: x.lower() == "true", default=False, help="KoBERTScore 평가 실행")
-    parser.add_argument("--", type=lambda x: x.lower() == "true", default=False, help="어미 탐지 평가 실행")
-    parser.add_argument("--llm", type=lambda x: x.lower() == "true", default=False, help="LLM 평가 실행")
-    args = parser.parse_args()
-    root_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning"
-    made_filtered = ("_made" if 'made' in args.dataset else "_filtered")
+# def save_csv(path, results):
+#     if results:
+#         with open(path, 'w', encoding='utf-8', newline='') as f:
+#             writer = csv.DictWriter(f, fieldnames=results[0].keys())
+#             writer.writeheader()
+#             writer.writerows(results)
+#         print(f"결과가 {path}에 저장되었습니다.")
 
-    def run_all_evals(dataset_name, is_general=False):
-        postfix = "_general" if is_general else ""
-        input_path = f"{root_path}/dataset/_dataset/{made_filtered}/{dataset_name}{postfix}.jsonl"
-        kbs_path = f"{root_path}/dataset/_dataset/_kobert/{dataset_name}{postfix}_kbs.jsonl"
-        output_csv = f"{root_path}/model_eval/_csv/{dataset_name}{postfix}.csv"
+# def run_all_evals(args, dataset_name, is_general=False):
+#     postfix = "_general" if is_general else ""
+#     root = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning"
+#     made_filtered = "_made" if 'made' in dataset_name else "_filtered"
+#     input_path = f"{root}/dataset/_dataset/{made_filtered}/{dataset_name}{postfix}.jsonl"
+#     kbs_path = f"{root}/dataset/_dataset/_kobert/{dataset_name}{postfix}_kbs.jsonl"
+#     out_dir = f"{root}/model_eval/_csv"
+#     all_results = []
+#     if args.kobert:
+#         kbs = KobertEvaluator(kbs_path).evaluate(input_path)
+#         if args.separate_csv: save_csv(f"{out_dir}/{dataset_name}{postfix}_kobert.csv", kbs)
+#         all_results = kbs
+#     if args.type:
+#         typ = EomiEvaluator().evaluate(input_path)
+#         if args.separate_csv: save_csv(f"{out_dir}/{dataset_name}{postfix}_type.csv", typ)
+#         if not all_results: all_results = typ
+#         else: [all_results[i].update(typ[i]) for i in range(len(typ))]
+#     if args.llm:
+#         llm = LLMEvaluator(kbs_path).evaluate(input_path)
+#         if args.separate_csv: save_csv(f"{out_dir}/{dataset_name}{postfix}_llm.csv", llm)
+#         if not all_results: all_results = llm
+#         else: [all_results[i].update(llm[i]) for i in range(len(llm))]
+#     if all_results:
+#         save_csv(f"{out_dir}/{dataset_name}{postfix}_all.csv", all_results)
+#     else:
+#         print("실행할 평가가 선택되지 않았습니다. --kobert, --type, --llm 중 하나 이상을 True로 지정하세요.")
 
-        if args.kobert:
-            kbs_eval(input_path, kbs_path, output_csv)
-        if args.eomi:
-            type_eval(input_path, output_csv)
-        if args.llm:
-            llm_eval(input_path, kbs_path, output_csv)
-
-    run_all_evals(args.dataset, is_general=False)
-    if args.general:
-        run_all_evals(args.dataset, is_general=True)
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("--dataset", type=str, required=True)
+#     parser.add_argument("--general", type=lambda x: x.lower() == "true", default=False)
+#     parser.add_argument("--kobert", type=lambda x: x.lower() == "true", default=False)
+#     parser.add_argument("--type", type=lambda x: x.lower() == "true", default=False)
+#     parser.add_argument("--llm", type=lambda x: x.lower() == "true", default=False)
+#     parser.add_argument("--separate_csv", type=lambda x: x.lower() == "true", default=False)
+#     args = parser.parse_args()
+#     run_all_evals(args, args.dataset, is_general=False)
+#     if args.general:
+#         run_all_evals(args, args.dataset, is_general=True)

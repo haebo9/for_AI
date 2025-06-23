@@ -1,6 +1,7 @@
 import json
 import sys
 import argparse
+import getenv
 
 sys.path.append("/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/KoBERTScore")
 
@@ -14,18 +15,15 @@ parser.add_argument("--dataset", type=str, required=True)
 args = parser.parse_args()
 
 dataset = args.dataset
-if "made" in dataset:
-    input_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_made/{dataset}.jsonl"
-    output_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_kobert/{dataset}_kbs.jsonl"
-elif "filtered" in dataset: 
-    input_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_filtered/{dataset}.jsonl"
-    output_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_kobert/{dataset}_kbs.jsonl"
+input_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/{dataset}.jsonl"
+output_jsonl = f"/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/{dataset}_kbs.jsonl"
 
 data_list = []
 candidates = []
 references = []
 from transformers import AutoTokenizer
-tokenizer = AutoTokenizer.from_pretrained("beomi/kcbert-base")
+
+tokenizer = AutoTokenizer.from_pretrained(model_name)
 # 토큰 수를 기반으로 300개에서 자르는 코드 작성
 def truncate_text(text: str, max_tokens: int = 290) -> str:
     # 토큰 ID로 변환
@@ -51,7 +49,7 @@ with open(input_jsonl, "r", encoding="utf-8") as f:
 print(f"⭕ 총 {len(data_list)}개 데이터, BERTScore 계산 시작...")
 print(f"-> 데이터셋 : {dataset}")
 
-scores = bertscore(references, candidates, batch_size=128)
+scores = bertscore(candidates, references, batch_size=128)
 
 bar_length = 40
 for idx, (data, f1) in enumerate(zip(data_list, scores), 1):
