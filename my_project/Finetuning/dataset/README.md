@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 평가 모델 개발
 ## 데이터셋 
 | 데이터셋 파일명                | 주요 특징 및 설명                                                                               |
@@ -10,9 +9,6 @@
 | dataset_0620_made.jsonl        | 유저 댓글 입력에 대한 규칙기반 변환(dog) 데이터(681개)          |
 | dataset_0622_made.jsonl        | 합성 인풋에 대한 Gemini 말투 변환 최종본(1700개).            |
 | test_made.jsonl                | 테스트용 Google AI Studio 합성 데이터.(100개)              |
-
-
-
 
 # 파인튜닝 데이터셋 전처리 및 변환 도구 (`dataset/`)
 
