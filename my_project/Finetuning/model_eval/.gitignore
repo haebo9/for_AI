@@ -20,6 +20,5 @@ dist/
 .DS_Store
 
 # 테스트 파일
-_input/
 _output/
 test_jsonl/
