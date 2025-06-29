@@ -135,5 +135,9 @@ def plot_score_distribution(
         axes[1].set_title(f"{metric_labels.get(metric, metric) if metric_labels else metric} - Boxplot")
         axes[1].set_ylabel("Normalized Score (0~1)")
         axes[1].set_ylim(0, 1)
+        
+        # x축 라벨 각도 45도로 설정
+        for label in axes[1].get_xticklabels():
+            label.set_rotation(45)
 
         st.pyplot(fig)

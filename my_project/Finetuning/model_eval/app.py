@@ -8,10 +8,63 @@ from functions.visualize import load_eval_results, get_mean_scores, normalize_sc
 from functions.feature_count import get_data_distribution
 from functions.filtering import filter_jsonl_bytes_by_threshold
 
+# =========================
+# 캐시 폴더 관련 함수
+# =========================
+CACHE_DIR = "./cache"
+
+def ensure_cache_dir():
+    if not os.path.exists(CACHE_DIR):
+        os.makedirs(CACHE_DIR)
+
+def save_eval_to_cache(filename: str, eval_bytes: bytes, mean_scores: dict, dist: dict, data_bytes: bytes):
+    ensure_cache_dir()
+    base = os.path.splitext(filename)[0]
+    with open(os.path.join(CACHE_DIR, f"{base}_eval.jsonl"), "wb") as f:
+        f.write(eval_bytes)
+    with open(os.path.join(CACHE_DIR, f"{base}_mean.json"), "w", encoding="utf-8") as f:
+        json.dump(mean_scores, f, ensure_ascii=False)
+    with open(os.path.join(CACHE_DIR, f"{base}_dist.json"), "w", encoding="utf-8") as f:
+        json.dump(dist, f, ensure_ascii=False)
+    with open(os.path.join(CACHE_DIR, f"{base}_data.jsonl"), "wb") as f:
+        f.write(data_bytes)
+
+def load_all_cached_files():
+    ensure_cache_dir()
+    cached = {}
+    for fname in os.listdir(CACHE_DIR):
+        if fname.endswith("_eval.jsonl"):
+            base = fname.replace("_eval.jsonl", "")
+            try:
+                with open(os.path.join(CACHE_DIR, f"{base}_eval.jsonl"), "rb") as f:
+                    eval_bytes = f.read()
+                with open(os.path.join(CACHE_DIR, f"{base}_mean.json"), "r", encoding="utf-8") as f:
+                    mean_scores = json.load(f)
+                with open(os.path.join(CACHE_DIR, f"{base}_dist.json"), "r", encoding="utf-8") as f:
+                    dist = json.load(f)
+                with open(os.path.join(CACHE_DIR, f"{base}_data.jsonl"), "rb") as f:
+                    data_bytes = f.read()
+                cached[f"{base}.jsonl"] = {
+                    "data": data_bytes,
+                    "eval": eval_bytes,
+                    "mean_scores": mean_scores,
+                    "dist": dist
+                }
+            except Exception as e:
+                continue
+    return cached
+
+# =========================
+# Streamlit 앱 시작
+# =========================
 st.title("말투변환 모델 성능 테스트")
 
+# --- 캐시 폴더에서 기존 평가 결과 자동 로딩 ---
+if "cached_files" not in st.session_state:
+    st.session_state["cached_files"] = load_all_cached_files()
+
 # 규칙 보기 toggle
-if st.toggle("데이터 업로드 규칙 보기"):
+if st.toggle("데이터 업로드 규칙 보기(업로드 중 금지)"):
     st.markdown("""
     ### 데이터 업로드 규칙
 
@@ -70,7 +123,7 @@ if st.toggle("데이터 업로드 규칙 보기"):
     **예시 파일을 참고하여 동일한 구조로 데이터를 준비해 주세요.**
     문제가 있으면 담당자에게 문의 바랍니다.
         """)
-    
+
 metric_labels = {
     "kobertscore_f1": "KoBERT",
     "type_score": "Type",
@@ -82,10 +135,6 @@ metric_labels = {
 all_metrics = list(metric_labels.keys())
 
 # --- 업로드 파일 및 평가 결과 캐싱 ---
-if "cached_files" not in st.session_state:
-    # {파일명: {"data": bytes, "eval": eval_jsonl_bytes, "mean_scores": dict, "dist": dict}}
-    st.session_state["cached_files"] = {}
-
 uploaded_files = st.file_uploader(
     "여러 개의 JSONL 데이터 파일을 업로드하세요. (분포 통계 및 모델 평가 자동 진행)",
     type=["jsonl"],
@@ -97,28 +146,25 @@ if not uploaded_files:
     sample_files = ["Sample.jsonl"]
     uploaded_files = []
     for path in sample_files:
-        with open(path, "rb") as f:
-            # Streamlit의 UploadedFile과 유사한 객체로 래핑 필요
-            from io import BytesIO
-            class DummyFile:
-                def __init__(self, name, data):
-                    self.name = name
-                    self._data = data
-                def getvalue(self):
-                    return self._data
-            uploaded_files.append(DummyFile(path, f.read()))
+        if os.path.exists(path):
+            with open(path, "rb") as f:
+                from io import BytesIO
+                class DummyFile:
+                    def __init__(self, name, data):
+                        self.name = name
+                        self._data = data
+                    def getvalue(self):
+                        return self._data
+                uploaded_files.append(DummyFile(path, f.read()))
 
 # 새로 업로드된 파일을 캐시에 저장 및 평가/통계 수행
 if uploaded_files:
     for f in uploaded_files:
         fname = f.name
         if fname not in st.session_state["cached_files"]:
-            # 1. 파일 저장
             st.session_state["cached_files"][fname] = {"data": f.getvalue(), "eval": None, "mean_scores": None, "dist": None}
-            # 2. 데이터 분포 통계
             dist = get_data_distribution(f.getvalue())
             st.session_state["cached_files"][fname]["dist"] = dist
-            # 3. 모델 평가 (평균값만 저장)
             with tempfile.NamedTemporaryFile(delete=False, suffix=".jsonl") as tmp_file:
                 tmp_file.write(f.getvalue())
                 tmp_path = tmp_file.name
@@ -145,9 +191,14 @@ if uploaded_files:
             mean_scores = normalize_scores(mean_scores)
             st.session_state["cached_files"][fname]["mean_scores"] = mean_scores
             st.success(f"✅ {fname} 평가 및 통계 완료!")
+            save_eval_to_cache(
+                fname,
+                eval_jsonl_bytes,
+                mean_scores,
+                dist,
+                f.getvalue()
+            )
 
-
-# 캐시에 저장된 파일 목록
 cached_file_names = list(st.session_state["cached_files"].keys())
 selected_cached_files = st.multiselect(
     "캐시에 저장된 파일을 선택해서 불러올 수 있습니다.",
@@ -155,7 +206,6 @@ selected_cached_files = st.multiselect(
     default=cached_file_names
 )
 
-# --- 평가 결과 전체(jsonl) 다운로드 기능 추가 ---
 st.markdown("#### 평가 결과 파일(jsonl) 다운로드")
 download_file = st.selectbox(
     "다운로드할 평가 결과 파일을 선택하세요.",
@@ -173,7 +223,6 @@ if download_file:
     else:
         st.warning("다운로드할 데이터가 없습니다.")
 
-# 실제 사용할 파일 리스트 (캐시에서 선택)
 file_objs = []
 for fname in selected_cached_files:
     file_obj = BytesIO(st.session_state["cached_files"][fname]["data"])
@@ -190,7 +239,6 @@ if file_objs:
         fname = uploaded_file.name
         dist = st.session_state["cached_files"][fname]["dist"]
         st.markdown(f"#### ⬇️ {fname} 데이터 분포 (동물별/감정별)")
-        # 피벗 테이블 생성
         pivot_data = []
         for post_type, emotion_counter in dist["type_emotion_counter"].items():
             row = {"post_type": post_type}
@@ -220,7 +268,6 @@ if file_objs:
         thresholds = {}
         cols = st.columns(len(all_metrics))
 
-        # 각 지표별 threshold의 초기값을 미리 지정
         default_thresholds = {
             "kobertscore_f1": 0.6,
             "type_score": 0.7,
@@ -265,7 +312,6 @@ if file_objs:
             else:
                 st.markdown("**선택된 데이터셋이 없습니다.**")
 
-            # 적용된 threshold 값만 출력
             thres_str = ", ".join([f"{metric_labels[m]}: {thresholds[m]}" for m in thresholds])
             st.success(f"✅ 적용된 threshold 값: {thres_str}")
 

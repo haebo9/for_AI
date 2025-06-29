@@ -17,11 +17,11 @@ def convert_to_instruction_format(
             }
             fout.write(json.dumps(new_data, ensure_ascii=False) + '\n')
 
-root_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset"
+root_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/dataset/_dataset/"
 
 # 사용 예시
 convert_to_instruction_format(
-    os.path.join(root_path,"_filtered/dataset_0619_filtered.jsonl"),
-    os.path.join(root_path, "_instruct/dataset_0619_instruct.jsonl")
+    os.path.join(root_path,"_made/dataset_0629_made.jsonl"),
+    os.path.join(root_path, "_instruct/dataset_0629_instruct.jsonl")
 )
 # /Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_filtered/dataset_0619_filtered.jsonl

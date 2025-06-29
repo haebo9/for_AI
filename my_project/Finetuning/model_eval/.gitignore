@@ -22,3 +22,5 @@ dist/
 # 테스트 파일
 _output/
 test_jsonl/
+HF_upload/
+meow_eval/
