@@ -1,23 +1,7 @@
-## 성능 평가
-### 평가 기준
-
-> **KoBERTScore**  
-  - 원문과 변환문장의 의미 유사도를 BERT 기반 임베딩으로 정량 평가  
-  - F1 점수(0~1, 높을수록 의미 보존이 잘 됨)
-
-> **LLM 평가**  
-  - OpenAI GPT 기반으로 아래 4가지 항목을 1~5점(0~1로 정규화)으로 평가  
-    1. **의미 보존**: 원문의 핵심 의미가 잘 유지되었는가  
-    2. **스타일 일치**: 감정/동물 유형의 말투, 어휘, 이모지 등이 잘 반영되었는가  
-    3. **자연스러움**: 한국어로서 어색하지 않고 자연스러운가  
-    4. **형식 적합성**: 요구 형식(문장부호, 이모지, 길이 등)이 잘 지켜졌는가  
-  - 각 항목 점수의 평균을 LLM 평가 점수로 사용
-
-> **최종 점수**  
-  - KoBERTScore와 LLM 평가 점수를 0.5:0.5로 가중 평균
+# 성능 평가
 
 ---
-### 도메인 성능 테스트
+## 도메인 성능 테스트
 
 > **동물 유형 (post_type)**
   - cat (고양이)
@@ -33,53 +17,67 @@
 
 ---
 
-### 일반화 테스트 
+## 주요 스크립트 설명
 
-> 신규 동물 (6종):
-> 다른 동물과 감정에 대해서도 말투 변환이 가능한지 ?
-- hamster (햄스터)
-- rabbit (토끼)
-- tiger (호랑이)
-- parrot (앵무새)
-- turtle (거북이)
-- bear (곰)
+- **run_eval.py**  
+  다양한 평가 기준(KoBERTScore, LLM, BLEU, Perplexity 등)을 한 번에 실행하고 결과를 jsonl로 저장합니다.
+- **run_eval.sh**  
+  여러 데이터셋에 대해 반복적으로 평가를 자동화합니다.
+- **input_only.py**  
+  평가 입력용 jsonl 파일을 생성합니다.
+- **functions/**  
+- **functions/**  
+  - `_kobert_eval.py`:  
+    KoBERTScore를 사용하여 원문과 변환문장의 의미 유사도를 BERT 임베딩 기반으로 정량 평가(F1 점수 산출).
+  - `_type_eval.py`:  
+    변환문장의 어미, 말투, 스타일이 요구 조건(동물/감정별 말투 등)에 맞게 반영되었는지 규칙 기반으로 평가.
+  - `_quality_eval.py`:  
+    OpenAI GPT 등 LLM을 활용해 의미 보존, 스타일 일치, 자연스러움, 형식 적합성 등 항목별로 변환문장 품질을 평가.
+  - `_bleu_eval.py`:  
+    BLEU 점수를 계산하여 원문과 변환문장 간 n-gram 기반 유사도를 평가(기계번역 품질 지표).
+  - `_perplex_eval.py`:  
+    KoGPT2 등 언어모델을 활용해 변환문장의 Perplexity(문장 자연스러움)를 평가, 낮을수록 자연스러움.
+  - `main_eval.py`:  
+    개별 평가 모듈을 통합 실행, 여러 기준의 결과를 종합/통계 처리하고 jsonl로 저장.
+  - `visualize.py`:  
+    평가 결과(jsonl 등)를 시각화하여 점수 분포, 항목별 비교, 이상치 탐지 등 분석 지원.
 
-> 신규 감정 (6종):
-- excited (신남/흥분)
-- proud (자랑스러움/으쓱함)
-- shy (수줍음/부끄러움)
-- confused (혼란스러움/어리둥절)
-- jealous (질투)
-- sleepy (졸림)
+- **KoBERTScore/**  
+  KoBERTScore 관련 코드, 실험, 리소스, 테스트 등 포함
 
 ---
 
-### 평가 방법
+## 실행 방법
 
-1. **KoBERTScore 산출**
-   - `run_Kobert.py`를 실행하여 각 데이터셋(`test`, `test_general` 등)에 대해 KoBERTScore를 계산하고 결과 파일(`_kbs.jsonl`)을 생성합니다.
+1. **의존성 설치**
+   ```bash
+   export PYTHONPATH=$PYTHONPATH:/Users/seo/Documents/_code/for_AI/my_project/Finetuning/model_eval/KoBERTScore
+   pip install -r requirements.txt
+   ```
 
-2. **LLM 평가 및 통합 평가**
-   - `run_eval.py`를 실행하여 KoBERTScore와 LLM 평가(의미 보존, 스타일 일치, 자연스러움, 형식 적합성)를 함께 평가합니다.
-   - 결과는 샘플별 CSV와 통계 요약으로 저장됩니다.
+2. **OpenAI API 키 등록**
+   - `.env` 파일에 `OPENAI_KEY=your-key` 추가
 
-3. **통계 및 결과 확인**
-   - 전체 평균, 감정별/동물별 평균, 0.5 이하 KoBERTScore 비율, LLM 평가 기준별 평균 점수를 확인할 수 있습니다.
+3. **평가 실행**
+   ```bash
+   python run_eval.py
+   ```
+   또는
+   ```bash
+   bash run_eval.sh
+   ```
 
-## 파일 구조 
-```
-model_eval/
-├─ run_eval.py # 평가 메인 스크립트
-├─ run_eval.sh # 평가 자동화 bash 스크립트
-├─ functions.py # 평가/통계 함수
-├─ input_only.py # LLM 입력용 jsonl 생성
-├─ requirements.txt # 필요 패키지 목록
-├─ jsonl/ # 입력/변환/KoBERTScore 결과 데이터
-├─ csv/ # 평가 결과 CSV
-├─ input/ # LLM 입력용 jsonl
-└─ README.md # 설명서
-```
+4. **결과 확인**
+   - `_output/` 폴더에 평가 결과(jsonl) 생성
+   - 평균 점수, 항목별 통계 등 확인 가능
+
+---
 
 ## 참고
-- OpenAI API 키 필요: `.env`에 `OPENAI_KEY` 등록
-- 패키지 설치: `pip install -r requirements.txt`
+
+- 입력/출력 데이터 포맷, 상세 옵션 등은 각 스크립트 상단 주석 및 예시 파일 참고
+- 평가 기준 및 방식은 필요에 따라 커스터마이즈 가능
+
+---
+
+문의: 담당자에게 연락 또는 이슈 등록
