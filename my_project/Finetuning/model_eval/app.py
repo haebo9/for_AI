@@ -4,7 +4,7 @@ import tempfile
 import subprocess
 import pandas as pd
 from io import BytesIO
-from functions.visualize import load_eval_results, get_mean_scores, normalize_scores, plot_radar_chart_multi, plot_score_distribution
+from functions.visualize import load_eval_results, get_mean_scores, plot_radar_chart_multi, plot_score_distribution
 from functions.feature_count import get_data_distribution
 from functions.filtering import filter_jsonl_bytes_by_threshold
 
@@ -53,6 +53,17 @@ def load_all_cached_files():
             except Exception as e:
                 continue
     return cached
+
+# Streamlit 업로드-캐시-세션 관리 
+def remove_file_from_cache(filename):
+    base = os.path.splitext(filename)[0]
+    if filename in st.session_state["cached_files"]:
+        del st.session_state["cached_files"][filename]
+    for suffix in ["_eval.jsonl", "_mean.json", "_dist.json", "_data.jsonl"]:
+        try:
+            os.remove(os.path.join(CACHE_DIR, f"{base}{suffix}"))
+        except Exception:
+            pass
 
 # =========================
 # Streamlit 앱 시작
@@ -153,26 +164,15 @@ uploaded_files = st.file_uploader(
     key="data_and_eval"
 )
 
-if not uploaded_files:
-    sample_files = ["Sample.jsonl"]
-    uploaded_files = []
-    for path in sample_files:
-        if os.path.exists(path):
-            with open(path, "rb") as f:
-                from io import BytesIO
-                class DummyFile:
-                    def __init__(self, name, data):
-                        self.name = name
-                        self._data = data
-                    def getvalue(self):
-                        return self._data
-                uploaded_files.append(DummyFile(path, f.read()))
-
 # 새로 업로드된 파일을 캐시에 저장 및 평가/통계 수행
 if uploaded_files:
     for f in uploaded_files:
         fname = f.name
+        if not fname or not isinstance(fname, str):
+            st.error("잘못된 파일명입니다. 파일을 다시 업로드 해주세요.")
+            continue
         if fname not in st.session_state["cached_files"]:
+            remove_file_from_cache(fname)
             st.session_state["cached_files"][fname] = {"data": f.getvalue(), "eval": None, "mean_scores": None, "dist": None}
             dist = get_data_distribution(f.getvalue())
             st.session_state["cached_files"][fname]["dist"] = dist
@@ -199,7 +199,6 @@ if uploaded_files:
                 st.session_state["cached_files"][fname]["eval"] = eval_jsonl_bytes
             results = load_eval_results(eval_path)
             mean_scores = get_mean_scores(results, all_metrics)
-            mean_scores = normalize_scores(mean_scores)
             st.session_state["cached_files"][fname]["mean_scores"] = mean_scores
             st.success(f"✅ {fname} 평가 및 통계 완료!")
             save_eval_to_cache(
@@ -210,7 +209,9 @@ if uploaded_files:
                 f.getvalue()
             )
 
-cached_file_names = list(st.session_state["cached_files"].keys())
+# 캐시 파일명 리스트 생성 시 문자열만 포함
+cached_file_names = [k for k in st.session_state["cached_files"].keys() if isinstance(k, str) and k]
+
 selected_cached_files = st.multiselect(
     "캐시에 저장된 파일을 선택해서 불러올 수 있습니다.",
     cached_file_names,
@@ -236,6 +237,9 @@ if download_file:
 
 file_objs = []
 for fname in selected_cached_files:
+    if not isinstance(fname, str):
+        st.error(f"잘못된 fname: {fname} (type: {type(fname)})")
+        continue
     file_obj = BytesIO(st.session_state["cached_files"][fname]["data"])
     file_obj.name = fname
     file_objs.append(file_obj)
@@ -266,6 +270,8 @@ if file_objs:
         model_name = os.path.splitext(fname)[0]
         model_names.append(model_name)
         mean_scores = st.session_state["cached_files"][fname]["mean_scores"]
+        if mean_scores is None:
+            mean_scores = {}
         table_row = {"모델명": model_name}
         table_row.update({metric_labels[metric]: mean_scores.get(metric, None) for metric in all_metrics})
         table_rows.append(table_row)

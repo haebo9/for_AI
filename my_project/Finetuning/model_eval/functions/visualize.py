@@ -24,18 +24,6 @@ def get_mean_scores(results: list, selected_metrics: Optional[List[str]] = None)
             mean_scores[metric] = sum(scores) / len(scores) if scores else 0.0
     return mean_scores
 
-def normalize_scores(scores: dict) -> dict:
-    norm = scores.copy()
-    # BLEU: 기대 최대값 0.1로 정규화 (0.1 이상은 1.0)
-    if "bleu_score" in norm and norm["bleu_score"] is not None:
-        norm["bleu_score"] = min(norm["bleu_score"] / 0.1, 1.0)
-    # Perplexity: 0.1/perplexity로 정규화 (최대 1.0)
-    if "perplexity_score" in norm and norm["perplexity_score"] is not None and norm["perplexity_score"] > 0:
-        norm["perplexity_score"] = min(0.1 / norm["perplexity_score"], 1.0)
-    else:
-        norm["perplexity_score"] = 0.0
-    return norm
-
 def plot_radar_chart_multi(
     scores_list: List[dict],
     model_names: List[str],
@@ -102,6 +90,8 @@ def plot_score_distribution(
         fig, axes = plt.subplots(1, 2, figsize=(10, 4))
         metric_scores = []
         for eval_bytes, fname in zip(eval_jsonl_bytes_list, file_names):
+            if eval_bytes is None:
+                continue
             lines = eval_bytes.decode("utf-8").splitlines()
             values = []
             for line in lines:
@@ -109,9 +99,7 @@ def plot_score_distribution(
                     data = json.loads(line)
                     v = data.get(metric)
                     if v is not None:
-                        # --- 정규화 적용 ---
-                        norm = normalize_scores({metric: float(v)})
-                        values.append(norm[metric])
+                        values.append(float(v))
                 except Exception:
                     continue
             if values:

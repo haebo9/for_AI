@@ -1,1 +1,1 @@
-{"kobertscore_f1": 0.6629736798822725, "type_score": 0.8634543801939059, "quality_score": 0.8397774844182871, "bleu_score": 1.0, "perplexity_score": 1.0}
+{"kobertscore_f1": 0.662973679449446, "type_score": 0.9681224030470914, "quality_score": 0.9345195204293628, "bleu_score": 0.10030137205678671, "perplexity_score": 0.09238651544842817}

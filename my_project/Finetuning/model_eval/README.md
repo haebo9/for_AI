@@ -49,25 +49,20 @@
 
 ## 실행 방법
 
-1. **의존성 설치**
+> **의존성 설치**
    ```bash
    export PYTHONPATH=$PYTHONPATH:/Users/seo/Documents/_code/for_AI/my_project/Finetuning/model_eval/KoBERTScore
+   export PYTHONPATH=$PYTHONPATH:/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/model_eval/KoBERTScore
+
    pip install -r requirements.txt
    ```
 
-2. **OpenAI API 키 등록**
-   - `.env` 파일에 `OPENAI_KEY=your-key` 추가
-
-3. **평가 실행**
+> **평가 실행**
    ```bash
-   python run_eval.py
-   ```
-   또는
-   ```bash
-   bash run_eval.sh
+  streamlit run app.py
    ```
 
-4. **결과 확인**
+> **결과 확인**
    - `_output/` 폴더에 평가 결과(jsonl) 생성
    - 평균 점수, 항목별 통계 등 확인 가능
 
@@ -79,5 +74,3 @@
 - 평가 기준 및 방식은 필요에 따라 커스터마이즈 가능
 
 ---
-
-문의: 담당자에게 연락 또는 이슈 등록

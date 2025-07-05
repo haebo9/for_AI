@@ -40,45 +40,80 @@ class PerplexityEvaluator:
             mean_loss = [s.item() / c.item() if c.item() > 0 else None for s, c in zip(sum_loss, count)]
             perplexities = [math.exp(l) if l is not None else None for l in mean_loss]
         return perplexities
-    
-def add_perplexity_score_to_jsonl(
-    self,
-    input_jsonl_path: str,
-    output_jsonl_path: str,
-    text_key: str = "transformed_content",
-    batch_size: int = 8,
-    max_length: int = 300,
-    thres_perplexity_score: float = 0.05
-) -> int:
-    texts: List[str] = []
-    datas: List[Dict] = []
 
-    with open(input_jsonl_path, "r", encoding="utf-8") as f:
-        for line in f:
-            data = json.loads(line)
-            text = data.get(text_key, "")
-            texts.append(text)
-            datas.append(data)     
+    def add_perplexity_score_to_jsonl(
+        self,
+        input_jsonl_path: str,
+        output_jsonl_path: str,
+        text_key: str = "transformed_content",
+        batch_size: int = 8,
+        max_length: int = 300,
+        thres_perplexity_score: float = 0.05
+    ) -> int:
+        texts: List[str] = []
+        datas: List[Dict] = []
 
-    # bad_count = 0
-    for i in range(0, len(texts), batch_size):
-        batch_texts = texts[i:i+batch_size]
-        batch_ppls = self.calculate_perplexity_batch(batch_texts, max_length=max_length)
-        for j, ppl in enumerate(batch_ppls):
-            datas[i+j]["perplexity_score"] = ppl if ppl is not None else None
+        with open(input_jsonl_path, "r", encoding="utf-8") as f:
+            for line in f:
+                data = json.loads(line)
+                text = data.get(text_key, "")
+                texts.append(text)
+                datas.append(data)     
 
-    with open(output_jsonl_path, "w", encoding="utf-8") as f:
-        for data in datas:
-            data.pop("perplexity", None)
-            f.write(json.dumps(data, ensure_ascii=False) + "\n")
+        for i in range(0, len(texts), batch_size):
+            batch_texts = texts[i:i+batch_size]
+            batch_ppls = self.calculate_perplexity_batch(batch_texts, max_length=max_length)
+            for j, ppl in enumerate(batch_ppls):
+                if ppl is not None and ppl > 0:
+                    datas[i+j]["perplexity_score"] = min(2.0 / ppl, 1.0)
+                else:
+                    datas[i+j]["perplexity_score"] = 0.0
 
-    # print(f"perplexity_score < {thres_perplexity_score} 인 데이터 개수: {bad_count}개 / {len(datas)}개")
-    # return bad_count
+        with open(output_jsonl_path, "w", encoding="utf-8") as f:
+            for data in datas:
+                data.pop("perplexity", None)
+                f.write(json.dumps(data, ensure_ascii=False) + "\n")
+
+        # return 값은 필요시 구현
+        # return bad_count
+
+    def evaluate_file(
+        self,
+        input_jsonl_path: str,
+        text_key: str = "transformed_content",
+        output_jsonl_path: str = None,
+        batch_size: int = 8,
+        max_length: int = 300
+    ):
+        texts: List[str] = []
+        datas: List[Dict] = []
+
+        with open(input_jsonl_path, "r", encoding="utf-8") as f:
+            for line in f:
+                data = json.loads(line)
+                text = data.get(text_key, "")
+                texts.append(text)
+                datas.append(data)
+
+        for i in range(0, len(texts), batch_size):
+            batch_texts = texts[i:i+batch_size]
+            batch_ppls = self.calculate_perplexity_batch(batch_texts, max_length=max_length)
+            for j, ppl in enumerate(batch_ppls):
+                if ppl is not None and ppl > 0:
+                    datas[i+j]["perplexity_score"] = min(1.0 / ppl, 1.0)
+                else:
+                    datas[i+j]["perplexity_score"] = 0.0
+
+        if output_jsonl_path is not None:
+            with open(output_jsonl_path, "w", encoding="utf-8") as f:
+                for data in datas:
+                    data.pop("perplexity", None)
+                    f.write(json.dumps(data, ensure_ascii=False) + "\n")
 
 if __name__ == "__main__":
     model_name = "skt/kogpt2-base-v2"
-    input_jsonl_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/dataset/_dataset/_test/test_short.jsonl"
-    output_jsonl_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/model_eval/_output/output_perplexity.jsonl"
+    input_jsonl_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_made/dataset_0620_made.jsonl"
+    output_jsonl_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/model_eval/_temp/temp_perplexity.jsonl"
 
     evaluator = PerplexityEvaluator(model_name)
     evaluator.evaluate_file(
@@ -88,3 +123,16 @@ if __name__ == "__main__":
         batch_size=8,
         max_length=300
     )
+
+    # 전체 샘플 수와 평균값 출력
+    scores = []
+    with open(output_jsonl_path, "r", encoding="utf-8") as f:
+        for line in f:
+            score = json.loads(line).get("perplexity_score")
+            if score is not None:
+                scores.append(score)
+    if scores:
+        print(f"전체 샘플 수: {len(scores)}")
+        print(f"정규화 Perplexity 평균: {sum(scores)/len(scores):.5f}")
+    else:
+        print("perplexity_score가 없습니다.")

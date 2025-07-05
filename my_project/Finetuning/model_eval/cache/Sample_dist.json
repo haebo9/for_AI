@@ -1,1 +1,0 @@
-{"total_count": 10, "unique_content_count": 5, "type_emotion_counter": {"cat": {"happy": 1, "sad": 1, "angry": 1, "grumpy": 1, "curious": 1}, "dog": {"happy": 1, "sad": 1, "angry": 1, "grumpy": 1, "curious": 1}}, "type_total_counter": {"cat": 5, "dog": 5}, "emotion_order": ["normal", "happy", "sad", "grumpy", "angry", "curious"]}
