@@ -53,20 +53,6 @@ def print_eval_stats(results, prefix=""):
         total = len(scores)
         print(f"⭐ perplexity_score 평균: {mean_score:.3f} (bad-data count : {below_thres}개 / {total}개)")
 
-def calc_perplexity_scores(
-    texts: List[str],
-    model_name: str = "skt/kogpt2-base-v2",
-    batch_size: int = 8,
-    max_length: int = 300
-) -> List[Optional[float]]:
-    evaluator = PerplexityEvaluator(model_name)
-    scores: List[Optional[float]] = []
-    for i in range(0, len(texts), batch_size):
-        batch_texts = texts[i:i+batch_size]
-        batch_scores = evaluator.calculate_perplexity_batch(batch_texts, max_length=max_length)
-        scores.extend(batch_scores)
-    return scores
-
 def run_all_evals(
     input_path: str,
     use_kobert: bool = False,
@@ -121,15 +107,15 @@ def run_all_evals(
     # Perplexity Score
     if use_perplexity:
         texts = [orig.get("transformed_content", "") for orig in original_data]
-        perplexity_scores = calc_perplexity_scores(
+        evaluator = PerplexityEvaluator(model_name="skt/kogpt2-base-v2")
+        perplexity_scores = evaluator.calc_perplexity_batch(
             texts,
-            model_name="skt/kogpt2-base-v2",
             batch_size=8,
-            max_length=300
         )
         for i, score in enumerate(perplexity_scores):
-            results[i]["perplexity_score"] = 10 / score if score and score > 0 else 0.0
+            results[i]["perplexity_score"] = score
         print_eval_stats([{"perplexity_score": r.get("perplexity_score")} for r in results])
+
 
     # 통합 저장
     if output_path is not None:

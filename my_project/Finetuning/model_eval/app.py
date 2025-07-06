@@ -4,9 +4,9 @@ import tempfile
 import subprocess
 import pandas as pd
 from io import BytesIO
-from functions.visualize import load_eval_results, get_mean_scores, plot_radar_chart_multi, plot_score_distribution
+from functions.visualize import load_eval_results, get_mean_scores, plot_radar_chart_multi, plot_score_distribution, show_mean_score_table
 from functions.feature_count import get_data_distribution
-from functions.filtering import filter_jsonl_bytes_by_threshold
+from functions.filtering import filter_jsonl_bytes_by_threshold, filter_normal_kobertscore
 
 # =========================
 # 캐시 폴더 관련 함수
@@ -309,6 +309,8 @@ if file_objs:
                 scores_list, model_names, selected_metrics,
                 title="Evaluation Score", metric_labels=metric_labels, thresholds=thresholds
             )
+            show_mean_score_table(scores_list, model_names, selected_metrics, metric_labels)
+
 
             st.markdown("#### 선택한 지표별 점수 분포 (히스토그램 & 박스플롯)")
             eval_jsonl_bytes_list = [
@@ -341,8 +343,10 @@ if file_objs:
                     len(st.session_state["cached_files"][fname]["eval"].decode("utf-8").splitlines())
                     for fname in selected_cached_files
                 )
-
+                # 1. threshold 기준 1차 필터링
                 filtered_data = filter_jsonl_bytes_by_threshold(eval_jsonl_bytes_list, thresholds)
+                # 2. normal 감정 + kobertscore ≤ 0.6 제거
+                filtered_nornal = filter_normal_kobertscore(filtered_data, kobertscore_threshold=0.6)
                 total_after = len(filtered_data)
 
                 score_keys = set(metric_labels.keys())

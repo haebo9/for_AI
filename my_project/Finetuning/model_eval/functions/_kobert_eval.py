@@ -19,8 +19,7 @@ class KobertEvaluator:
             input_ids = input_ids[:self.max_tokens]
         return self.tokenizer.decode(input_ids, skip_special_tokens=True)
 
-
-    def evaluate(self, input_path: str, batch_size: int = 128) -> list:
+    def evaluate(self, input_path: str, batch_size: int = 128, save_path: str = None) -> float:
         results = []
         data_list = []
         candidates = []
@@ -40,43 +39,49 @@ class KobertEvaluator:
                 else:
                     src = self.truncate_text(data.get("content", ""))
                     hyp = self.truncate_text(data.get("transformed_content", ""))
-                candidates.append(hyp)      # hyp가 candidate
-                references.append(src)      # src가 reference
+                candidates.append(hyp)
+                references.append(src)
                 data_list.append(data)
 
         print(f"⭕ 총 {len(data_list)}개 데이터, BERTScore 계산 시작...")
         print(f"-> 데이터셋 : {filename}")
 
-        # print(f"references type: {type(references)}, candidates type: {type(candidates)}")
-        # print(f"references sample: {references[:2]}")
-        # print(f"candidates sample: {candidates[:2]}")
-
         scores = self.bertscore(references, candidates, batch_size=batch_size)
         if isinstance(scores, tuple) and len(scores) == 3:
             _, _, scores = scores  # F1만 사용
 
+        f1_list = []
         for idx, (data, f1) in enumerate(zip(data_list, scores), 1):
-            data["kobertscore_f1"] = round(float(f1), 5)
+            f1_val = round(float(f1), 5)
+            data["kobertscore_f1"] = f1_val
             results.append(data)
+            f1_list.append(f1_val)
             percent = idx / len(data_list)
             filled_len = int(bar_length * percent)
             bar = "|" * filled_len + "-" * (bar_length - filled_len)
             print(f"\r진행률: |{bar}| {idx}/{len(data_list)} ({percent*100:.1f}%)", end="", flush=True)
         print()
+
+        # 결과 저장(옵션)
+        if save_path is not None:
+            with open(save_path, "w", encoding="utf-8") as f:
+                for r in results:
+                    json.dump(r, f, ensure_ascii=False)
+                    f.write("\n")
+
         return results
 
-    def evaluate_from_data(self, data_list: list) -> list:
-        candidates = []
-        references = []
-        for item in data_list:
-            candidates.append(self.truncate_text(item.get("transformed_content", "")))
-            references.append(self.truncate_text(item.get("content", "")))
-        scores = self.bertscore(references, candidates, batch_size=len(data_list))
-        if isinstance(scores, tuple) and len(scores) == 3:
-            _, _, scores = scores  # F1만 사용
-        results = []
-        for i, item in enumerate(data_list):
-            k_score = float(scores[i]) if i < len(scores) else 0.0
-            item["kobertscore_f1"] = round(k_score, 5)
-            results.append(item)
-        return results
+if __name__ == "__main__":
+    # ======= 파일 경로 세팅 =======
+    input_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/dataset/_dataset/_made/test_made.jsonl"
+    output_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/model_eval/_temp/test_made_kobertscore.jsonl"
+
+    evaluator = KobertEvaluator()
+    results = evaluator.evaluate(input_path=input_path, batch_size=128, save_path=output_path)
+
+    # ======= 평균 F1 출력 =======
+    if results:
+        mean_f1 = round(sum([r["kobertscore_f1"] for r in results]) / len(results), 5)
+        print(f"평균 KoBERTScore F1: {mean_f1}")
+    else:
+        print("평가할 데이터가 없습니다.")

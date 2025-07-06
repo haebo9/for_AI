@@ -1,138 +1,111 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
-import math
+from transformers import AutoTokenizer, AutoModelForCausalLM
 import json
-from typing import List, Dict, Optional
+from tqdm import tqdm
+from typing import List
 
 class PerplexityEvaluator:
-    def __init__(self, model_name: str):
-        self.device = "cpu"
-        self.model = AutoModelForCausalLM.from_pretrained(model_name)
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model.to(self.device)
-        if self.tokenizer.pad_token is None:
-            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-            self.model.resize_token_embeddings(len(self.tokenizer))
-
-    def calculate_perplexity_batch(self, texts: List[str], max_length: int = 300) -> List[Optional[float]]:
-        valid_texts = [t if t.strip() else self.tokenizer.pad_token for t in texts]
-        inputs = self.tokenizer(
-            valid_texts,
-            return_tensors="pt",
-            padding=True,
-            truncation=True,
-            max_length=max_length
-        )
-        inputs = {k: v.to(self.device) for k, v in inputs.items()}
-
-        with torch.no_grad():
-            outputs = self.model(**inputs, labels=inputs["input_ids"])
-            shift_logits = outputs.logits[..., :-1, :].contiguous()
-            shift_labels = inputs["input_ids"][..., 1:].contiguous()
-            loss_fct = torch.nn.CrossEntropyLoss(reduction='none')
-            loss = loss_fct(
-                shift_logits.view(-1, shift_logits.size(-1)),
-                shift_labels.view(-1)
-            ).view(shift_labels.size())
-            mask = (shift_labels != self.tokenizer.pad_token_id)
-            sum_loss = (loss * mask).sum(dim=1)
-            count = mask.sum(dim=1)
-            mean_loss = [s.item() / c.item() if c.item() > 0 else None for s, c in zip(sum_loss, count)]
-            perplexities = [math.exp(l) if l is not None else None for l in mean_loss]
-        return perplexities
-
-    def add_perplexity_score_to_jsonl(
+    def __init__(
         self,
-        input_jsonl_path: str,
-        output_jsonl_path: str,
-        text_key: str = "transformed_content",
-        batch_size: int = 8,
-        max_length: int = 300,
-        thres_perplexity_score: float = 0.05
-    ) -> int:
-        texts: List[str] = []
-        datas: List[Dict] = []
-
-        with open(input_jsonl_path, "r", encoding="utf-8") as f:
-            for line in f:
-                data = json.loads(line)
-                text = data.get(text_key, "")
-                texts.append(text)
-                datas.append(data)     
-
-        for i in range(0, len(texts), batch_size):
-            batch_texts = texts[i:i+batch_size]
-            batch_ppls = self.calculate_perplexity_batch(batch_texts, max_length=max_length)
-            for j, ppl in enumerate(batch_ppls):
-                if ppl is not None and ppl > 0:
-                    datas[i+j]["perplexity_score"] = min(2.0 / ppl, 1.0)
-                else:
-                    datas[i+j]["perplexity_score"] = 0.0
-
-        with open(output_jsonl_path, "w", encoding="utf-8") as f:
-            for data in datas:
-                data.pop("perplexity", None)
-                f.write(json.dumps(data, ensure_ascii=False) + "\n")
-
-        # return 값은 필요시 구현
-        # return bad_count
-
-    def evaluate_file(
-        self,
-        input_jsonl_path: str,
-        text_key: str = "transformed_content",
-        output_jsonl_path: str = None,
-        batch_size: int = 8,
-        max_length: int = 300
+        model_name: str = "skt/kogpt2-base-v2",
+        device: str = "cuda" if torch.cuda.is_available() else "cpu"
     ):
-        texts: List[str] = []
-        datas: List[Dict] = []
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
+        self.model.eval()
+        self.device = device
 
+    def calculate_ppl(self, sentence: str) -> float:
+        input_ids = self.tokenizer.encode(sentence, return_tensors="pt").to(self.device)
+        with torch.no_grad():
+            outputs = self.model(input_ids, labels=input_ids)
+            loss = outputs.loss
+        return torch.exp(loss).item()
+
+    @staticmethod
+    def score_by_threshold(ppl: float) -> float:
+        if 60 <= ppl <= 180:
+            return 1.0
+        elif 35 <= ppl < 60 or 180 < ppl <= 350:
+            return 0.8
+        elif 20 <= ppl < 35 or 350 < ppl <= 700:
+            return 0.6
+        elif 700 < ppl <= 2000:
+            return 0.4
+        else:
+            return 0.2
+
+    def calculate_perplexity_batch(
+        self,
+        input_jsonl_path: str,
+        output_jsonl_path: str = None,
+        field: str = "transformed_content",
+        batch_size: int = 16,
+    ) -> list:
+        """
+        파일로부터 읽어서 배치 평가 (기존 방식)
+        """
         with open(input_jsonl_path, "r", encoding="utf-8") as f:
-            for line in f:
-                data = json.loads(line)
-                text = data.get(text_key, "")
-                texts.append(text)
-                datas.append(data)
+            datas = [json.loads(line) for line in f]
 
-        for i in range(0, len(texts), batch_size):
-            batch_texts = texts[i:i+batch_size]
-            batch_ppls = self.calculate_perplexity_batch(batch_texts, max_length=max_length)
-            for j, ppl in enumerate(batch_ppls):
-                if ppl is not None and ppl > 0:
-                    datas[i+j]["perplexity_score"] = min(1.0 / ppl, 1.0)
-                else:
-                    datas[i+j]["perplexity_score"] = 0.0
+        score_list = []
+
+        for i in tqdm(range(0, len(datas), batch_size), desc="Evaluating"):
+            batch = datas[i:i + batch_size]
+            for j, data in enumerate(batch):
+                text = data.get(field, "")
+                try:
+                    ppl = self.calculate_ppl(text)
+                    score = self.score_by_threshold(ppl)
+                except Exception:
+                    ppl = -1.0
+                    score = 0.0
+                datas[i + j]["raw_perplexity"] = ppl
+                datas[i + j]["perplexity_score"] = score
+                score_list.append(score)
 
         if output_jsonl_path is not None:
             with open(output_jsonl_path, "w", encoding="utf-8") as f:
                 for data in datas:
-                    data.pop("perplexity", None)
-                    f.write(json.dumps(data, ensure_ascii=False) + "\n")
+                    json.dump(data, f, ensure_ascii=False)
+                    f.write("\n")
+
+        return score_list
+
+    def calc_perplexity_batch(
+        self,
+        texts: List[str],
+        batch_size: int = 32
+    ) -> list:
+        """
+        텍스트 리스트로 배치 평가 (main.py에서 별도 래핑 필요 없음)
+        """
+        score_list = []
+        for i in tqdm(range(0, len(texts), batch_size), desc="Evaluating"):
+            batch = texts[i:i + batch_size]
+            for text in batch:
+                try:
+                    ppl = self.calculate_ppl(text)
+                    score = self.score_by_threshold(ppl)
+                except Exception:
+                    score = 0.0
+                score_list.append(score)
+        return score_list
 
 if __name__ == "__main__":
-    model_name = "skt/kogpt2-base-v2"
-    input_jsonl_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_made/dataset_0620_made.jsonl"
-    output_jsonl_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/model_eval/_temp/temp_perplexity.jsonl"
+    input_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/dataset/_dataset/_made/test_made.jsonl"
+    output_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/model_eval/_temp/test_made_perplexity.jsonl"
 
-    evaluator = PerplexityEvaluator(model_name)
-    evaluator.evaluate_file(
-        input_jsonl_path=input_jsonl_path,
-        text_key="transformed_content",
-        output_jsonl_path=output_jsonl_path,
-        batch_size=8,
-        max_length=300
+    evaluator = PerplexityEvaluator()
+    # 파일 전체 배치 평가 (파일 I/O)
+    scores = evaluator.calculate_perplexity_batch(
+        input_jsonl_path=input_path,
+        output_jsonl_path=output_path,
+        field="transformed_content",
+        batch_size=32
     )
-
-    # 전체 샘플 수와 평균값 출력
-    scores = []
-    with open(output_jsonl_path, "r", encoding="utf-8") as f:
-        for line in f:
-            score = json.loads(line).get("perplexity_score")
-            if score is not None:
-                scores.append(score)
-    if scores:
-        print(f"전체 샘플 수: {len(scores)}")
-        print(f"정규화 Perplexity 평균: {sum(scores)/len(scores):.5f}")
-    else:
-        print("perplexity_score가 없습니다.")
+    # 텍스트 리스트 평가 (리스트로 바로)
+    # 예시: scores = evaluator.calculate_perplexity_batch_from_texts(["문장1", "문장2"], batch_size=8)
+    valid_scores = [s for s in scores if s > 0]
+    avg_score = round(sum(valid_scores) / len(valid_scores), 5) if valid_scores else 0.0
+    print(f"평균 Perplexity 점수: {avg_score}")

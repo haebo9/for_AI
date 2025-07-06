@@ -28,9 +28,8 @@ class BleuEvaluator:
                 hypothesis = data.get(self.hyp_key, "")
                 if reference and hypothesis:
                     bleu = self.calc_bleu(reference, hypothesis)
-                    # 정규화
-                    bleu_score = min(bleu * 1.0, 1.0)
-                    bleu_scores.append(bleu_score)  # 정규화된 값 저장
+                    bleu_score = min(bleu * 10.0, 1.0)  # 정규화
+                    bleu_scores.append(bleu_score)
                     data["bleu"] = bleu
                     data["bleu_score"] = bleu_score
                 else:
@@ -45,8 +44,8 @@ class BleuEvaluator:
         return bleu_scores
 
 if __name__ == "__main__":
-    jsonl_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_made/dataset_0620_made.jsonl"
-    output_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/model_eval/_temp/temp_bleu.jsonl"
+    jsonl_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/dataset/_dataset/_made/dataset_0629_made.jsonl"
+    output_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/model_eval/_temp/dataset_0629_made_bleu.jsonl"
     evaluator = BleuEvaluator()
     bleu_scores = evaluator.evaluate_jsonl(jsonl_path, output_path)
     bleu_valid = [b for b in bleu_scores if b is not None]

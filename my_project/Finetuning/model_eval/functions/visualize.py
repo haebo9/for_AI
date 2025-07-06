@@ -1,9 +1,11 @@
 import json
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from typing import List, Optional
 import streamlit as st
 import warnings
+
 warnings.filterwarnings("ignore")
 
 def load_eval_results(jsonl_path: str) -> list:
@@ -12,6 +14,19 @@ def load_eval_results(jsonl_path: str) -> list:
         for line in f:
             results.append(json.loads(line))
     return results
+
+def show_mean_score_table(scores_list, model_names, selected_metrics, metric_labels=None):
+    # 테이블 데이터 준비
+    rows = []
+    for model_name, scores in zip(model_names, scores_list):
+        row = {"모델명": model_name}
+        for m in selected_metrics:
+            label = metric_labels.get(m, m) if metric_labels else m
+            row[label] = round(scores.get(m, 0), 4)
+        rows.append(row)
+    df = pd.DataFrame(rows)
+    st.markdown("#### 모델별 평균 점수")
+    st.dataframe(df, use_container_width=True)
 
 def get_mean_scores(results: list, selected_metrics: Optional[List[str]] = None) -> dict:
     mean_scores = {}
