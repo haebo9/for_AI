@@ -69,27 +69,23 @@ class QualityEvaluator:
         """금지어/비속어가 포함되어 있으면 0.0, 없으면 1.0 반환"""
         return 0.0 if any(pattern.search(text) for pattern in self.forbidden_patterns) else 1.0
 
-    def score_repetition(self, text: str) -> float:
+    def score_repetition(self, hyp: str) -> int:
         """
-        단어, 문자, 문장, 이모지 반복을 감점하여 0.0~1.0 점수를 계산  
-        - self.max_repeat 이하 반복이면 1.0, 이상이면 감점
+        하이픈(hyp)의 문장을 .!?로 분할한 뒤,
+        동일 문장이 몇 번 반복되는지(최대 반복 횟수)를 반환.
+        만약 문장 분할 결과가 없다면 0을 반환한다.
         """
-        words = re.findall(r'\w+', text)
-        word_repeats = max([words.count(w) for w in set(words)]) if words else 0
-
-        char_repeats = max([len(m.group(0)) for m in re.finditer(r'((\S{2,5}))\1{1,}', text)]) if re.search(r'((\S{2,5}))\1{1,}', text) else 0
-
-        sents = re.split(r'[.!?]\s*', text)
-        sent_repeats = max([sents.count(s) for s in set(sents) if s]) if sents else 0
-
-        emojis = self.emoji_pattern.findall(text)
-        emoji_repeats = max([emojis.count(e) for e in set(emojis)]) if emojis else 0
-
-        if max(word_repeats, char_repeats, sent_repeats, emoji_repeats) <= self.max_repeat:
-            return 1.0
-        rep_penalty = 0.15 if sent_repeats > self.max_repeat else 0
-        score = max(0.0, 1.0 - ((max(word_repeats, char_repeats, emoji_repeats) - self.max_repeat) * 0.25 + rep_penalty))
-        return round(score, 2)
+        # 1. 문장 분할 (마침표, 느낌표, 물음표 기준)
+        sents = re.split(r'[.!?]\s*', hyp.strip())
+        # 2. 공백 제거 및 빈 문장 제거
+        sents = [s.strip() for s in sents if s.strip()]
+        # 3. 빈 리스트라면 0 반환 (max 오류 방지)
+        if not sents:
+            return 0
+        # 4. 각 문장별 등장 횟수 리스트
+        repeats = [sents.count(s) for s in set(sents) if s]
+        # 5. 반복 횟수 중 최대값 반환 (없으면 0)
+        return max(repeats) if repeats else 0
 
     def score_emoji_usage(self, text: str) -> float:
         """
