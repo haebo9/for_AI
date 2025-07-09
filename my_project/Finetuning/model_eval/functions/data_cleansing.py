@@ -65,6 +65,6 @@ def clean_jsonl_replace_fields(
     print(f"[클랜징] content, transformed_content 둘 다 빈 값이 아닌 {written}개만 저장 완료")
 
 if __name__ == "__main__":
-    input_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/dataset/_dataset/_made/dataset_0629_made.jsonl"
-    output_path = "/Users/seo/Documents/_code/for_AI/my_project/Finetuning/dataset/_dataset/_made/dataset_0629_clean.jsonl"
+    input_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_made/dataset_0709_made.jsonl"
+    output_path = "/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/dataset/_dataset/_filtered/dataset_0709_made_clean.jsonl"
     clean_jsonl_replace_fields(input_path, output_path)
