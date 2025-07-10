@@ -72,7 +72,7 @@ def plot_radar_chart_multi(
         thres_values = [thresholds.get(m, 0) for m in selected_metrics]
         thres_values += thres_values[:1]
         ax.plot(angles, thres_values, color='red', linewidth=2, linestyle='dashed', label="Threshold")
-        ax.fill(angles, thres_values, color='red', alpha=0.15, zorder=1)
+        # ax.fill(angles, thres_values, color='red', alpha=0.15, zorder=1)
 
     # 모델별 점수 시각화
     for idx, (scores, model_name) in enumerate(zip(scores_list, model_names)):
@@ -128,7 +128,7 @@ def plot_score_distribution(
         axes[0].set_title(f"{metric_labels.get(metric, metric) if metric_labels else metric} - Histogram")
         axes[0].set_xlabel("Normalized Score (0~1)")
         axes[0].set_ylabel("Count")
-        axes[0].set_xlim(0, 1)
+        axes[0].set_xlim(0, 1.05)
         axes[0].legend()
 
         # 박스플롯 (정규화 값 기준)

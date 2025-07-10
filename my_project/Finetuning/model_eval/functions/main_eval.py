@@ -14,11 +14,11 @@ warnings.filterwarnings("ignore")
 
 def print_eval_stats(results, prefix=""):
     thres_koberscore =  0.6
-    thres_typescore = 0.7
-    thres_qualityscore = 0.7
-    thres_bleu = 0.002
-    thres_perplexity = 0.05
-
+    thres_typescore = 0.8
+    thres_qualityscore = 0.8
+    thres_bleu = 0.4
+    thres_perplexity = 0.5
+    
     if not results:
         print(f"{prefix}데이터 없음")
         return

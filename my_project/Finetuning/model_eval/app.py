@@ -6,7 +6,7 @@ import pandas as pd
 from io import BytesIO
 from functions.visualize import load_eval_results, get_mean_scores, plot_radar_chart_multi, plot_score_distribution, show_mean_score_table
 from functions.feature_count import get_data_distribution
-from functions.filtering import filter_jsonl_bytes_by_threshold, filter_normal_kobertscore
+from functions.filtering import filter_jsonl_bytes_by_threshold
 
 # =========================
 # 캐시 폴더 관련 함수
@@ -216,7 +216,7 @@ cached_file_names = [k for k in st.session_state["cached_files"].keys() if isins
 selected_cached_files = st.multiselect(
     "캐시에 저장된 파일을 선택해서 불러올 수 있습니다.",
     cached_file_names,
-    default=cached_file_names
+    default=[],
 )
 
 st.markdown("#### 평가 결과 파일(jsonl) 다운로드")
@@ -288,10 +288,10 @@ if file_objs:
 
         default_thresholds = {
             "kobertscore_f1": 0.6,
-            "type_score": 0.7,
-            "quality_score": 0.7,
-            "bleu_score": 0.2,
-            "perplexity_score": 0.2
+            "type_score": 0.8,
+            "quality_score": 0.8,
+            "bleu_score": 0.4,
+            "perplexity_score": 0.5,
         }
         for i, metric in enumerate(all_metrics):
             label = metric_labels[metric]
@@ -344,12 +344,11 @@ if file_objs:
                     len(st.session_state["cached_files"][fname]["eval"].decode("utf-8").splitlines())
                     for fname in selected_cached_files
                 )
-                # 1. threshold 기준 1차 필터링
+                # threshold 기준 필터링
                 filtered_data = filter_jsonl_bytes_by_threshold(eval_jsonl_bytes_list, thresholds)
-                # 2. normal 감정 + kobertscore ≤ 0.6 제거
-                filtered_nornal = filter_normal_kobertscore(filtered_data, kobertscore_threshold=0.6)
-                total_after = len(filtered_data)
 
+                total_after = len(filtered_data)
+                
                 score_keys = set(metric_labels.keys())
                 filtered_data_no_scores = []
                 for d in filtered_data:
