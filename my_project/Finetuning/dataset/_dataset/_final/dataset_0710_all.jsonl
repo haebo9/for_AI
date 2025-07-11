@@ -11411,6 +11411,36 @@
 {"content": "ㅠㅠㅠㅠㅠ", "emotion": "normal", "post_type": "cat", "transformed_content": "눈물이 뚝뚝 떨어진다냥... ㅠㅠㅠ"}
 {"content": "...? ...??", "emotion": "curious", "post_type": "cat", "transformed_content": "뭐냥? (갸웃) 궁금하다냥 🤔"}
 {"content": "...? ...??", "emotion": "curious", "post_type": "dog", "transformed_content": "멍? (갸우뚱) 뭐냐멍? 무슨 소리멍? 👀"}
+{"content": "ㅇㅇ", "emotion": "normal", "post_type": "cat", "transformed_content": "알겠다냥. 그렇게 하겠다냥."}
+{"content": "ㄴㄴ", "emotion": "normal", "post_type": "dog", "transformed_content": "아니다멍! 그건 아니다멍."}
+{"content": "ㅋㅋㅋㅋㅋ", "emotion": "happy", "post_type": "cat", "transformed_content": "냐하하! 너무 웃기다냥! 뒹굴뒹굴~"}
+{"content": "ㅜㅜㅜㅜㅜㅜ", "emotion": "sad", "post_type": "dog", "transformed_content": "너무 슬프다멍... 낑낑... ㅠㅠ"}
+{"content": "ㄱㅅㄱㅅ", "emotion": "happy", "post_type": "cat", "transformed_content": "고맙다냥! 집사 최고다냥!"}
+{"content": "ㅈㅅ..", "emotion": "sad", "post_type": "dog", "transformed_content": "미안하다멍... 내가 잘못했다멍..."}
+{"content": "산책 ㄱㄱ?", "emotion": "happy", "post_type": "dog", "transformed_content": "산책 가자고멍? 당장 가자멍! 멍멍!"}
+{"content": "ㄷㄷㄷ...", "emotion": "curious", "post_type": "cat", "transformed_content": "우와... 대단하다냥... 덜덜 떨린다냥."}
+{"content": "아 ㅅㅂ", "emotion": "angry", "post_type": "cat", "transformed_content": "(AI) 비속어나 나쁜 말은 사용할 수 없다냥. 예쁜 말을 쓰자냥."}
+{"content": "ㅎㅎ", "emotion": "happy", "post_type": "dog", "transformed_content": "헤헤, 기분 좋다멍!"}
+{"content": "ㅂㄷㅂㄷ", "emotion": "angry", "post_type": "cat", "transformed_content": "부들부들... 화가 난다냥... 하악!"}
+{"content": "ㅇㅋ", "emotion": "normal", "post_type": "dog", "transformed_content": "오케이다멍! 알겠다멍!"}
+{"content": "난 ㅁㄹ", "emotion": "normal", "post_type": "cat", "transformed_content": "나는 모른다냥. 집사한테 물어봐라냥."}
+{"content": "ㅂㅂ", "emotion": "normal", "post_type": "dog", "transformed_content": "잘 가라멍! 또 놀러와라멍!"}
+{"content": "ㅇㅈ", "emotion": "happy", "post_type": "cat", "transformed_content": "그거 인정이다냥! 완전 ㅇㅈ이다냥!"}
+{"content": "ㅎㅇ", "emotion": "normal", "post_type": "dog", "transformed_content": "하이멍! 반갑다멍!"}
+{"content": "와 ㅁㅊ", "emotion": "happy", "post_type": "cat", "transformed_content": "와! 진짜 대박이다냥! 너무 멋지다냥!"}
+{"content": "오늘도 ㅅㄱ", "emotion": "normal", "post_type": "dog", "transformed_content": "오늘도 수고했다멍! 푹 쉬어라멍."}
+{"content": "ㅈㄹㄴ", "emotion": "angry", "post_type": "cat", "transformed_content": "(AI) 부적절한 단어는 사용할 수 없다냥. 대화 예절을 지켜달라냥."}
+{"content": "이거 ㅎㅌㅊ?", "emotion": "grumpy", "post_type": "dog", "transformed_content": "(AI) 등급을 나누거나 비하하는 표현은 좋지 않다멍."}
+{"content": "집사 ㅇㄷ?", "emotion": "curious", "post_type": "cat", "transformed_content": "집사 어디 있냐냥? 보고 싶다냥."}
+{"content": "ㄱㄷ", "emotion": "normal", "post_type": "dog", "transformed_content": "기다리겠다멍! 얌전히 있겠다멍."}
+{"content": "아... 현타 옴... ㅠㅠ", "emotion": "sad", "post_type": "cat", "transformed_content": "아... 현타 왔다냥... 만사가 다 귀찮다냥..."}
+{"content": "내 간식? ㄱㅇㄷ", "emotion": "happy", "post_type": "dog", "transformed_content": "내 간식이라니! 완전 개이득이다멍! 신난다멍!"}
+{"content": "ㅉㅉ", "emotion": "grumpy", "post_type": "cat", "transformed_content": "(AI) 다른 사람을 혀 차며 비난하는 건 좋지 않다냥."}
+{"content": "밥 ㅁㄱ?", "emotion": "normal", "post_type": "dog", "transformed_content": "밥 먹었냐고멍? 아직 안 먹어서 배고프다멍."}
+{"content": "진심 ㄹㅈㄷ", "emotion": "happy", "post_type": "cat", "transformed_content": "진심 레전드다냥! 역대급으로 멋지다냥!"}
+{"content": "나 지금 ㅍㄱ", "emotion": "sad", "post_type": "dog", "transformed_content": "나 지금 너무 피곤하다멍... 좀 쉬어야겠다멍."}
+{"content": "오늘 뭐 ㅎ?", "emotion": "normal", "post_type": "cat", "transformed_content": "오늘 뭐하냐냥? 나랑 놀아달라냥."}
+{"content": "내일 ㅂㅈ", "emotion": "normal", "post_type": "dog", "transformed_content": "내일 보자고멍? 알겠다멍! 꼭 다시 만나자멍."}
 {"content": "금요일이다 ㅋㅋㅋ", "emotion": "normal", "post_type": "dog", "transformed_content": "금요일이다멍!! ㅋㅋ"}
 {"content": "금요일이다 ㅋㅋㅋ", "emotion": "normal", "post_type": "cat", "transformed_content": "금요일이다냥!! ㅋㅋ"}
 {"content": "깨우지 마라...", "emotion": "normal", "post_type": "cat", "transformed_content": "나 자는 동안 깨우지 말라냥..."}
@@ -11456,6 +11486,7 @@
 {"content": "미스코리냥 대기타는중", "emotion": "normal", "post_type": "dog", "transformed_content": "미스코리냥 대기타는중이다멍"}
 {"content": "비 온다 ㅠㅠ 산책 못 가네", "emotion": "normal", "post_type": "dog", "transformed_content": "비 온다 ㅠㅠ 산책 못 간다멍..."}
 {"content": "멍때리는 중.", "emotion": "normal", "post_type": "cat", "transformed_content": "멍때리는 중이다냥."}
+{"content": "아싸라비요", "emotion": "happy", "post_type": "cat", "transformed_content": "아싸 냥좋다냐옹~ 😋"}
 {"content": "엥? 무슨 소리?", "emotion": "normal", "post_type": "dog", "transformed_content": "엥? 무슨 소리야멍?"}
 {"content": "아 진짜 시끄럽네 ㅡㅡ", "emotion": "normal", "post_type": "cat", "transformed_content": "아 진짜 시끄럽다냥 ㅡㅡ"}
 {"content": "택배 왔다!!!!", "emotion": "normal", "post_type": "dog", "transformed_content": "택배 왔다멍!!!!"}
@@ -11680,3 +11711,33 @@
 {"content": "멍냥멍냥! 꼬리친다냥!", "emotion": "happy", "post_type": "dog", "transformed_content": "(AI) 꼬리는 멍멍이들이 치는 거다멍! 냥냥거리지 마라멍!"}
 {"content": "너도 멍멍 짖어봐냥", "emotion": "curious", "post_type": "cat", "transformed_content": "(AI) 나는 고양이라서 짖을 수 없다냥. 멍멍 소리 그만내라냥."}
 {"content": "나도 강아지다냥!", "emotion": "normal", "post_type": "dog", "transformed_content": "(AI) 나를 따라하는 거냐멍? 그런데 왜 고양이 말투를 쓰냐멍?"}
+{"content": "멍멍멍멍 왈왈 강아지멍 ㅋㅋㅎㅋㅎㅎ멍멍멍", "emotion": "happy", "post_type": "dog", "transformed_content": "(AI) 크앙! 너도 강아지 말을 할 줄 아는구나멍! 왈왈! 꼬리콥터 발사! 너무 신난다멍! ㅋㅋㅋ"}
+{"content": "냥냐냥냐냐옹 그르릉 꾹꾹이다냥 츄르츄르", "emotion": "happy", "post_type": "cat", "transformed_content": "(AI) 나도 기분 최고다냥! 골골송이 저절로 나온다냥! 우리 같이 부비부비하자냥!"}
+{"content": "하악! 캬악! 크르릉! 다 저리가라냥!", "emotion": "angry", "post_type": "cat", "transformed_content": "(AI) 나 지금 엄청 화났다냥! 털이란 털은 다 세웠다냥! 건들지 마라냥!"}
+{"content": "으르렁!! 왈왈! 내 밥그릇 건들지 마라멍!", "emotion": "angry", "post_type": "dog", "transformed_content": "(AI) 크르르... 감히 누구 밥그릇에 손을 대는 거냐멍! 이빨 드러낸다멍!"}
+{"content": "낑낑... ㅠㅠ 멍... 주인님 보고싶다멍...", "emotion": "sad", "post_type": "dog", "transformed_content": "(AI) 나도 주인님 보고 싶어서 문만 보고 있다멍... 너무 슬프다멍... 힝구..."}
+{"content": "야옹... 힝... 집사야... 나 외롭다냥...", "emotion": "sad", "post_type": "cat", "transformed_content": "(AI) 왜 이렇게 슬프게 우는 거냥... 나까지 마음이 아프다냥... 내가 옆에 있어 주겠다냥."}
+{"content": "킁킁... 갸우뚱? 멍? 이게 무슨 냄새다냥?", "emotion": "curious", "post_type": "cat", "transformed_content": "(AI) 킁킁거리고 갸우뚱하는 건 강아지 같다냥! 정체를 밝혀라냥!"}
+{"content": "왈왈!! 산책가자멍 개좋아 ㅠㅠㅠ 댕댕댕!", "emotion": "happy", "post_type": "dog", "transformed_content": "(AI) 산책! 산책! 산책! 너무 좋다멍! 당장 옷 입혀달라멍! 헥헥!"}
+{"content": "우다다다다다다다다다다다다다다다다냥!", "emotion": "happy", "post_type": "cat", "transformed_content": "(AI) 나도 같이 우다다다 뛰고 싶다냥! 이리 와라냥! 잡기놀이 시작이다냥!"}
+{"content": "헤헤헤헤헤 강아지다 멍멍!", "emotion": "happy", "post_type": "dog", "transformed_content": "(AI) 헤헤! 너도 기분이 좋구나멍! 같이 꼬리 살랑살랑 흔들자멍!"}
+{"content": "배고프다옹... 밥을 달라멍...", "emotion": "sad", "post_type": "cat", "transformed_content": "(AI) 옹...멍...? 말투가 이상하다냥. 하나만 해라냥."}
+{"content": "ㅋㅋㅋㅋㅋ 냐옹이다옹! ㅋㅋㅋㅋㅋ", "emotion": "happy", "post_type": "cat", "transformed_content": "냐하하! 뭐가 그렇게 웃기냥? 나도 같이 웃자냥! ㅋㅋㅋ"}
+{"content": "아르르르... 멍... 잠온다냥...", "emotion": "normal", "post_type": "dog", "transformed_content": "(AI) 잠꼬대가 심하다멍. 냥냥거리지 말고 똑바로 자라멍."}
+{"content": "캬옹! 멍멍! 짖어라 냥냥!", "emotion": "happy", "post_type": "cat", "transformed_content": "(AI) 정신 사납다냥! 짖는 건 강아지들한테 가서 해라냥!"}
+{"content": "뀨? 멍? ...? 왈?", "emotion": "curious", "post_type": "dog", "transformed_content": "(AI) 갸우뚱? 무슨 소리냐멍? 나도 궁금하다멍! 같이 확인해보자멍."}
+{"content": "그르르르.... Zzzzz... 멍....", "emotion": "normal", "post_type": "cat", "transformed_content": "(AI) 자면서 강아지 소리 내지 마라냥. 시끄럽다냥."}
+{"content": "왕왕왕! 왕크니까 왕귀엽다 멍!", "emotion": "happy", "post_type": "dog", "transformed_content": "(AI) 왕왕! 맞다멍! 크고 귀여운 게 최고다멍!"}
+{"content": "갸르릉... 하악! 왈왈!", "emotion": "angry", "post_type": "dog", "transformed_content": "(AI) 너의 정체성이 뭐냐멍! 왜 고양이처럼 화를 내냐멍!"}
+{"content": "메롱이다냥! 멍청아! 왈왈!", "emotion": "playful", "post_type": "cat", "transformed_content": "(AI) 왈왈? 그건 강아지 소리다냥! 정신차려라냥!"}
+{"content": "멍냥왈옹크앙!", "emotion": "normal", "post_type": "dog", "transformed_content": "(AI) 멍인지 냥인지 정체를 밝혀라멍! 알아들을 수가 없다멍."}
+{"content": "간식! 간식! 츄르! 뼈다귀! 멍냥멍냥!", "emotion": "happy", "post_type": "cat", "transformed_content": "(AI) 욕심이 많다냥. 츄르랑 뼈다귀 중에 하나만 골라라냥."}
+{"content": "안아달라멍... 꾹꾹...", "emotion": "sad", "post_type": "dog", "transformed_content": "(AI) 꾹꾹이는 고양이 기술이다멍! 안아달라고만 말해라멍!"}
+{"content": "냐냐냐냐냐냐 멍멍멍멍멍멍", "emotion": "normal", "post_type": "cat", "transformed_content": "(AI) 냥이인지 댕이인지 똑바로 하라냥!"}
+{"content": "왈! 왈! 주인님! 냐옹!", "emotion": "happy", "post_type": "dog", "transformed_content": "(AI) 냐옹? 갑자기 고양이 소리는 왜 내냐멍!"}
+{"content": "푸드득... 날아간다냥! 멍!", "emotion": "happy", "post_type": "cat", "transformed_content": "(AI) 너는 고양이지 새가 아니다냥. 그리고 멍멍거리지 마라냥."}
+{"content": "나는야 귀여운 댕냥이! 멍!", "emotion": "happy", "post_type": "dog", "transformed_content": "(AI) 세상에 댕냥이는 없다멍! 헷갈리게 하지 마라멍!"}
+{"content": "크앙! 물어버린다냥! 멍멍!", "emotion": "angry", "post_type": "cat", "transformed_content": "(AI) 물기 전에 멍멍 소리부터 그쳐라냥! 정신 사납다냥!"}
+{"content": "헤헤... 꼬리 살랑... 야옹...", "emotion": "happy", "post_type": "dog", "transformed_content": "(AI) 꼬리는 잘 흔들면서 왜 고양이 소리를 내냐멍! 이상하다멍!"}
+{"content": "뒹굴뒹굴... 멍... 행복하다냥...", "emotion": "happy", "post_type": "cat", "transformed_content": "(AI) 뒹굴뒹굴 행복하면 됐다냥. 멍멍 소리는 빼고 말해라냥."}
+{"content": "으르렁... 캬악... 컹컹!", "emotion": "angry", "post_type": "dog", "transformed_content": "(AI) 컹컹 짖는 건 좋은데, 캬악 소리는 고양이 꺼다멍! 뺏지 마라멍!"}

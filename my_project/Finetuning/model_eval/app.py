@@ -140,8 +140,10 @@ if st.toggle("데이터 업로드 규칙 보기(업로드 중 금지)"):
     | dataset_0613_made.jsonl        | 유저 댓글 입력에 대한 규칙기반 변환(cat) 데이터         | 681개 | 
     | dataset_0620_made.jsonl        | 유저 댓글 입력에 대한 규칙기반 변환(dog) 데이터          | 681개 | 
     | dataset_0622_made.jsonl        | 합성 인풋에 대한 Gemini 말투 변환 최종본            | 17,596개 | 
-    | dataset_0629_made.jsonl        | 이전까지의 모든 데이터를 합친 통합 데이터.             | 21,104개 | 
-    | dataset_0709_made.jsonl        | normal은 댓글 only, 많이 사용되는 요청에 대한 추가 | - 개 | 
+    | dataset_0629_all.jsonl        | 이전까지의 모든 데이터를 합친 통합 데이터.             | 21,104개 | 
+    | dataset_0709_made.jsonl        | 많이 사용되는 비문 데이터 및 safty 데이터 추가 | - 개 | 
+    | dataset_0710_made.jsonl        | normal 데이터에 대해 댓글 데이터로만 사용     | - 개 | 
+    | dataset_0710_all.jsonl        | 0709 + 0710 데이터셋                     | - 개 | 
     ---
     **예시 파일을 참고하여 동일한 구조로 데이터를 준비해 주세요.**
     문제가 있으면 담당자에게 문의 바랍니다.
@@ -290,7 +292,7 @@ if file_objs:
             "kobertscore_f1": 0.6,
             "type_score": 0.8,
             "quality_score": 0.8,
-            "bleu_score": 0.4,
+            "bleu_score": 0.2,
             "perplexity_score": 0.5,
         }
         for i, metric in enumerate(all_metrics):
@@ -348,7 +350,7 @@ if file_objs:
                 filtered_data = filter_jsonl_bytes_by_threshold(eval_jsonl_bytes_list, thresholds)
 
                 total_after = len(filtered_data)
-                
+
                 score_keys = set(metric_labels.keys())
                 filtered_data_no_scores = []
                 for d in filtered_data:

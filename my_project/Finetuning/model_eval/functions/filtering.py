@@ -21,7 +21,7 @@ def filter_jsonl_bytes_by_threshold(
 
 # def filter_normal_kobertscore(data_list, kobertscore_threshold=0.6):
 #     """
-#     data_list: list of dict (이미 json.loads 된 상태)
+#     data_list: list of dict (이미 ''json.loads 된 상태)
 #     kobertscore_threshold: float (이 값 이하인 normal 감정 row 제거)
 #     """
 #     result = []
