@@ -42,7 +42,7 @@
 {"post_type": "dog", "emotion": "sad", "content": "오늘 저녁은 특식이다! 제일 좋아하는 고기 반찬이네! 신난다!", "level": "2"}
 {"post_type": "cat", "emotion": "curious", "content": "이제 다 질렸어. 아무것도 궁금하지 않고 그냥 쉬고 싶다.", "level": "2"}
 {"post_type": "dog", "emotion": "happy", "content": "비 오는 날은 싫다. 기분도 가라앉고 온몸이 쑤시는 것 같아.", "level": "2"}
-{"post_type": "cat", "emotion": "annoyed", "content": "사람 북적이는 곳에 와서 신나는 음악을 들으니 에너지가 넘쳐!", "level": "2"}
+{"post_type": "cat", "emotion": "angry", "content": "사람 북적이는 곳에 와서 신나는 음악을 들으니 에너지가 넘쳐!", "level": "2"}
 {"post_type": "dog", "emotion": "normal", "content": "믿었던 친구에게 배신당했다. 마음이 찢어질 듯 아프다.", "level": "2"}
 {"post_type": "cat", "emotion": "happy", "content": "시끄러운 소음 때문에 잠을 설쳤더니 하루 종일 피곤하고 신경질 난다.", "level": "2"}
 {"post_type": "dog", "emotion": "angry", "content": "네가 곁에 있어서 정말 다행이야. 언제나 고마워.", "level": "2"}

@@ -1,6 +1,7 @@
 import re
 import json
 import os
+from typing import Optional
 
 class TypeEvaluator:
     """
@@ -64,13 +65,14 @@ class TypeEvaluator:
         self.cat_noun_pattern = re.compile(r"|".join([re.escape(n) for n in self.cat_nouns]), re.IGNORECASE)
         self.dog_noun_pattern = re.compile(r"|".join([re.escape(n) for n in self.dog_nouns]), re.IGNORECASE)
 
-    def remove_nouns(self, text: str) -> str:
-        text = self.cat_noun_pattern.sub(' ', text)
-        text = self.dog_noun_pattern.sub(' ', text)
+
+    def replace_nouns(self, text: str) -> str:
+        text = self.cat_noun_pattern.sub('명사', text)
+        text = self.dog_noun_pattern.sub('명사', text)
         return text
 
     def type_score(self, post_type: str, transformed: str) -> float:
-        text_wo_noun = self.remove_nouns(transformed)
+        text_wo_noun = self.replace_nouns(transformed)
         has_cat = bool(self.cat_pattern.search(text_wo_noun))
         has_dog = bool(self.dog_pattern.search(text_wo_noun))
         if post_type == "dog":
@@ -94,7 +96,7 @@ class TypeEvaluator:
         else:
             return -1
 
-    def evaluate(self, input_path: str, output_path:str =None) -> float:
+    def evaluate(self, input_path: str, output_path: Optional[str] = None) -> list:
         results = []
         total_score = 0.0
         count = 0

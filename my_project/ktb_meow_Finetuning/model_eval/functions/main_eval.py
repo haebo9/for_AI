@@ -60,7 +60,7 @@ def run_all_evals(
     use_quality: bool = False,
     use_bleu: bool = False,
     use_perplexity: bool = False,
-    output_path: str = None
+    output_path: Optional[str] = None
 ):
     with open(input_path, "r", encoding="utf-8") as f:
         original_data = [json.loads(line) for line in f]

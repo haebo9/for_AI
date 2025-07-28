@@ -4,6 +4,7 @@ __pycache__/
 
 # 환경설정/시크릿
 .env
+.venv/
 
 # 빌드/배포
 build/
@@ -24,3 +25,4 @@ _output/
 test_jsonl/
 HF_upload/
 meow_eval/
+_temp/

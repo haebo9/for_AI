@@ -141,9 +141,9 @@ if st.toggle("데이터 업로드 규칙 보기(업로드 중 금지)"):
     | dataset_0620_made.jsonl        | 유저 댓글 입력에 대한 규칙기반 변환(dog) 데이터          | 681개 | 
     | dataset_0622_made.jsonl        | 합성 인풋에 대한 Gemini 말투 변환 최종본            | 17,596개 | 
     | dataset_0629_all.jsonl        | 이전까지의 모든 데이터를 합친 통합 데이터.             | 21,104개 | 
-    | dataset_0709_made.jsonl        | 많이 사용되는 비문 데이터 및 safty 데이터 추가 | - 개 | 
-    | dataset_0710_made.jsonl        | normal 데이터에 대해 댓글 데이터로만 사용     | - 개 | 
-    | dataset_0710_all.jsonl        | 0709 + 0710 데이터셋                     | - 개 | 
+    | dataset_0709_made.jsonl        | 많이 사용되는 비문 데이터 및 safty 데이터 추가 | 465 개 | 
+    | dataset_0710_made.jsonl        | normal 데이터에 대해 댓글 데이터로만 사용     | 19399 개 | 
+    | dataset_0710_all.jsonl        | 0709 + 0710(수정,삭제 처리) 데이터셋                     | 11845 개 | 
     ---
     **예시 파일을 참고하여 동일한 구조로 데이터를 준비해 주세요.**
     문제가 있으면 담당자에게 문의 바랍니다.
@@ -284,6 +284,36 @@ if file_objs:
         st.markdown("-----------------------")
         st.markdown("#### 시각화할 평가 지표 및 threshold 값을 선택하세요.")
 
+        # Level별 점수 요약 표 기능 추가
+        st.markdown("#### Level별 점수 요약 (평균)")
+        import numpy as np
+        for fname in selected_cached_files:
+            eval_bytes = st.session_state["cached_files"][fname].get("eval")
+            if not eval_bytes:
+                continue
+            lines = eval_bytes.decode("utf-8").splitlines()
+            rows = [json.loads(line) for line in lines if line.strip()]
+            level_dict = {}
+            for row in rows:
+                level = str(row.get("level", "없음"))
+                if level not in level_dict:
+                    level_dict[level] = {k: [] for k in all_metrics}
+                for k in all_metrics:
+                    v = row.get(k)
+                    if isinstance(v, (int, float)):
+                        level_dict[level][k].append(v)
+            # 표 생성
+            if level_dict:
+                table = []
+                for level in sorted(level_dict.keys(), key=lambda x: (x.isdigit(), int(x) if x.isdigit() else x)):
+                    row = {"Level": level}
+                    for k in all_metrics:
+                        vals = level_dict[level][k]
+                        row[metric_labels[k]] = np.round(np.mean(vals), 4) if vals else None
+                    table.append(row)
+                st.markdown(f"**{fname}**")
+                st.dataframe(pd.DataFrame(table), use_container_width=True)
+
         selected_metrics = []
         thresholds = {}
         cols = st.columns(len(all_metrics))
@@ -313,7 +343,6 @@ if file_objs:
                 title="Evaluation Score", metric_labels=metric_labels, thresholds=thresholds
             )
             show_mean_score_table(scores_list, model_names, selected_metrics, metric_labels)
-
 
             st.markdown("#### 선택한 지표별 점수 분포 (히스토그램 & 박스플롯)")
             eval_jsonl_bytes_list = [

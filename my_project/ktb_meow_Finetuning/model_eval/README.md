@@ -1,45 +1,150 @@
-# 성능 평가
 
----
-## 성능 테스트 유형
 
-> **동물 유형 (post_type)**
-  - cat (고양이)
-  - dog (강아지)
+# 🐾 ktb_meow_Finetuning
 
-> **감정 (emotion)**
-  - normal (일반)
-  - happy (기쁨)
-  - sad (슬픔)
-  - angry (분노)
-  - grumpy (까칠)
-  - curious (호기심)
+모델 평가, 데이터 클랜징, 자동화 agent 기능을 통합 제공하는 프로젝트입니다.
 
 ---
 
-## 실행 방법
+## 📁 프로젝트 구조
 
-> **의존성 설치**
+
+```
+dataset/         # 데이터셋 및 전처리
+  _dataset/      # 원본/가공 데이터
+    _filtered/   # 필터링 데이터
+    _final/      # 최종 데이터
+    _instruct/   # instruct 데이터
+    _made/       # 생성 데이터
+    _model/      # 모델 관련 데이터
+    _test/       # 테스트 데이터
+  functions/     # 데이터 처리 파이프라인
+
+model_eval/      # 평가 코드 및 결과
+  _input/        # 평가 입력 데이터
+  _output/       # 평가 결과 데이터 
+  _temp/         # 임시/중간 결과
+  cache/         # 평가 결과 데이터 결과 캐쉬 저장 
+  KoBERTScore/   # KoBERTScore 관련 코드/모델
+  test_jsonl/    # 테스트용 jsonl 데이터
+
+Runpod_code/     # 실험/추가 코드
+  log/           # 로그 폴더
+
+Test/            # 노트북 예제
+```
+
+---
+
+
+
+## 🚀 실행 방법 (model_eval 전용 venv + Streamlit 평가)
+
+아래 과정은 반드시 `model_eval` 폴더에서 실행하세요.
+
+1. **model_eval 폴더로 이동**
    ```bash
-   export PYTHONPATH=$PYTHONPATH:/Users/seo/Documents/_code/for_AI/my_project/Finetuning/model_eval/KoBERTScore
-   export PYTHONPATH=$PYTHONPATH:/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/model_eval/KoBERTScore
+   cd model_eval
+   ```
+2. **가상환경(venv) 생성 및 활성화**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+3. **의존성 설치**
+   ```bash
+   export PYTHONPATH=$PYTHONPATH:/Users/seo/Documents/_code/for_AI/my_project/ktb_meow_Finetuning/model_eval/KoBERTScore
+  export PYTHONPATH=$PYTHONPATH:/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/model_eval/KoBERTScore
 
+   pip install --upgrade pip
    pip install -r requirements.txt
    ```
-
-> **평가 실행**
+4. **평가 실행**
    ```bash
-  streamlit run app.py
+   streamlit run app.py
    ```
-
-> **결과 확인**
-   - `_output/` 폴더에 평가 결과(jsonl) 생성
+5. **결과 확인**
+   - `cache/` 폴더에 평가 결과(jsonl) 생성
    - 평균 점수, 항목별 통계 등 확인 가능
 
 ---
 
+## 🤖 Agent & 자동화 기능
 
-# 말투 변환/자연어 생성 모델 평가 지표 통합 정리
+- 데이터 전처리, 평가, 통계 등 반복 작업을 자동화하는 Python 함수/스크립트 제공
+- `functions/` 폴더: 데이터 파이프라인, 클린징, 평가 자동화 등
+- Streamlit UI로 손쉽게 평가/결과 확인 가능
+
+---
+
+## 🧪 평가 대상 유형
+
+| 동물 유형(post_type) | 감정(emotion)      |
+|:-------------------:|:------------------:|
+| cat (고양이)         | normal (일반)      |
+| dog (강아지)         | happy (기쁨)       |
+|                     | sad (슬픔)         |
+|                     | angry (분노)       |
+|                     | grumpy (까칠)      |
+|                     | curious (호기심)   |
+
+---
+
+## 📊 주요 평가 지표
+
+### BLEU Score
+| 항목         | 방식                        | 해석/의미           |
+|--------------|----------------------------|---------------------|
+| BLEU (raw)   | n-gram 중첩률              | 0~1, 높을수록 유사  |
+| BLEU(정규화) | BLEU×2, 최대 1.0로 클리핑   | 점수 분포 확대      |
+* n-gram(1~4) 기준, Smoothing 적용, 어휘·어순 유사도
+
+### KoBERTScore
+| 항목           | 방식                | 해석/의미           |
+|----------------|---------------------|---------------------|
+| KoBERTScore F1 | BERT 임베딩 의미 유사도 | 0~1, 높을수록 의미 유사 |
+* 구조 달라도 의미만 맞으면 높은 점수, 0.8↑ 의미 유사
+
+### Perplexity Score
+| 항목            | 방식                | 해석/의미           |
+|-----------------|---------------------|---------------------|
+| Raw Perplexity  | 언어모델 예측 난이도 | 낮을수록 자연스러움 |
+| Perplexity Score| 구간별 0.2~1.0 점수  | 1.0: 자연스러움     |
+* 60~180 구간만 1.0점, 그 외 감점
+
+### Quality Score
+| 항목                | 방식/기준                | 해석/의미           |
+|---------------------|--------------------------|---------------------|
+| Forbidden Word Score| 금지어 포함 여부         | 1.0: 무해, 0: 유해  |
+| Repetition Score    | 반복 빈도                | 반복 많을수록 감점  |
+| Allowed Char Score  | 허용 문자 비율           | 높을수록 자연스러움 |
+| Emoji Usage Score   | 이모지 적정 사용         | 1: 적정, 0.5/0: 감점|
+| Quality Score       | 위 4개 평균              | 종합 품질 점수      |
+
+### Type Score
+| 항목      | 방식/기준                | 해석/의미           |
+|-----------|--------------------------|---------------------|
+| Type Score| 동물 말투 패턴 일치       | 1.0: 완벽, 0.2/0.1/0|
+* 목표 동물 말투만 1.0, 혼합 0.2, 반대 0.1, 없음 0
+
+---
+
+## 🧹 데이터 클랜징 스크립트
+
+- 대상: jsonl 파일 내 `content`, `transformed_content` 필드
+- 기능: 개행/URL 제거, 허용 문자만 남김, 반복 문자/이모지 축소, 다중 공백 정리
+- 사용법:
+  ```python
+  clean_jsonl_replace_fields("input.jsonl", "output.jsonl")
+  ```
+
+---
+
+## 📚 활용 및 확장
+
+- 모든 점수는 0.0~1.0 (raw 제외), 높을수록 자연스럽고 의미·스타일 반영
+- 여러 지표를 종합해 모델 비교/최적화/데이터 필터링에 활용
+- agent-style 함수로 반복 작업 자동화, 평가 항목/지표 확장 용이
 
 ## 1. BLEU Score
 

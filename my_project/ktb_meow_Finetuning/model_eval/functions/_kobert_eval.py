@@ -2,6 +2,7 @@ from KoBERTScore.score import BERTScore
 from transformers import AutoTokenizer
 import json
 import os
+from typing import Optional
 
 class KobertEvaluator:
     def __init__(self, model_name: str = "beomi/kcbert-base", best_layer: int = 4, max_tokens: int = 290):
@@ -18,8 +19,8 @@ class KobertEvaluator:
         if len(input_ids) > self.max_tokens:
             input_ids = input_ids[:self.max_tokens]
         return self.tokenizer.decode(input_ids, skip_special_tokens=True)
-
-    def evaluate(self, input_path: str, batch_size: int = 128, save_path: str = None) -> float:
+   
+    def evaluate(self, input_path: str, batch_size: int = 128, save_path: Optional[str]=None) -> list:
         results = []
         data_list = []
         candidates = []
