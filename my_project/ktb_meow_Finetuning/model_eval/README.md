@@ -49,12 +49,12 @@ Test/            # 노트북 예제
 2. **가상환경(venv) 생성 및 활성화**
    ```bash
    python3 -m venv .venv
-   source .venv/bin/activate
+   source .venv/bin/activate && python --version
    ```
 3. **의존성 설치**
    ```bash
    export PYTHONPATH=$PYTHONPATH:/Users/seo/Documents/_code/for_AI/my_project/ktb_meow_Finetuning/model_eval/KoBERTScore
-  export PYTHONPATH=$PYTHONPATH:/Users/jaeseoksee/Documents/project/for_AI/my_project/Finetuning/model_eval/KoBERTScore
+  export PYTHONPATH=$PYTHONPATH:/Users/jaeseoksee/Documents/project/for_AI/my_project/ktb_meow_Finetuning/model_eval/KoBERTScore
 
    pip install --upgrade pip
    pip install -r requirements.txt
